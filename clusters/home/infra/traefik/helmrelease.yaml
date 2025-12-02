@@ -18,6 +18,7 @@ spec:
     deployment:
       kind: DaemonSet
 
+    # The service exposes NodePorts 30080/30443
     service:
       type: NodePort
       ports:
@@ -26,20 +27,22 @@ spec:
         websecure:
           nodePort: 30443
 
+    # Traefik must LISTEN on non-privileged ports inside the pod
     ports:
       web:
-        port: 8000
-        expose: true
-        exposedPort: 80
+        port: 8000                # internal Traefik entrypoint
+        expose:
+          default: true           # required format (NOT boolean)
         protocol: TCP
       websecure:
         port: 8443
-        expose: true
-        exposedPort: 443
+        expose:
+          default: true
         protocol: TCP
 
     ingressClass:
       enabled: true
+      isDefaultClass: true
       name: traefik
 
     providers:
