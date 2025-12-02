@@ -28,14 +28,14 @@ spec:
 
     ports:
       web:
-        port: 8000         # internal port (not 80!)
+        port: 8000
         expose: true
-        exposedPort: 80    # public
+        exposedPort: 80
         protocol: TCP
       websecure:
-        port: 8443         # internal port (not 443!)
+        port: 8443
         expose: true
-        exposedPort: 443   # public
+        exposedPort: 443
         protocol: TCP
 
     ingressClass:
