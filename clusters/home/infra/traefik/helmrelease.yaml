@@ -4,28 +4,45 @@ metadata:
   name: traefik
   namespace: kube-system
 spec:
-  interval: 10m
+  interval: 5m
   chart:
     spec:
       chart: traefik
-      version: "37.4.0"
+      version: "34.4.0"
       sourceRef:
         kind: HelmRepository
         name: traefik
         namespace: flux-system
+
   values:
     deployment:
       kind: DaemonSet
 
     service:
       type: NodePort
-      spec:
-        externalTrafficPolicy: Cluster
+      ports:
+        web:
+          nodePort: 30080
+        websecure:
+          nodePort: 30443
 
     ports:
       web:
-        port: 80
-        nodePort: 30080
+        port: 8000         # internal port (not 80!)
+        expose: true
+        exposedPort: 80    # public
+        protocol: TCP
       websecure:
-        port: 443
-        nodePort: 30443
+        port: 8443         # internal port (not 443!)
+        expose: true
+        exposedPort: 443   # public
+        protocol: TCP
+
+    ingressClass:
+      enabled: true
+      name: traefik
+
+    providers:
+      kubernetesIngress:
+        publishedService:
+          enabled: true
