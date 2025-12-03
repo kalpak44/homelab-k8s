@@ -17,7 +17,7 @@ spec:
   values:
     service:
       type: LoadBalancer
-      loadBalancerIP: "192.168.1.150"
+      loadBalancerIP: "46.10.211.21"
       single: true
 
     ports:
