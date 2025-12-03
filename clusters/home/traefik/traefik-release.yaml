@@ -8,19 +8,28 @@ spec:
   chart:
     spec:
       chart: traefik
-      version: ">=25.0.0"
+      version: ">=34.0.0"
       sourceRef:
         kind: HelmRepository
         name: traefik
         namespace: flux-system
+
   values:
-    # Enable automatic Let's Encrypt using Cloudflare
+    # -------------------------
+    # ACME + Cloudflare DNS-01
+    # -------------------------
     additionalArguments:
       - "--certificatesresolvers.cloudflare.acme.tlschallenge=false"
       - "--certificatesresolvers.cloudflare.acme.dnschallenge=true"
       - "--certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare"
       - "--certificatesresolvers.cloudflare.acme.email=kalpak44@ya.ru"
       - "--certificatesresolvers.cloudflare.acme.storage=/acme.json"
+
+      # New HTTP -> HTTPS redirection syntax
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
 
     env:
       - name: CF_API_TOKEN
@@ -29,12 +38,18 @@ spec:
             name: cloudflare-dns
             key: CF_API_TOKEN
 
+    # -------------------------
+    # Entrypoints
+    # -------------------------
     ports:
       web:
-        redirectTo: websecure
+        expose: true
       websecure:
         tls:
           enabled: true
 
+    # -------------------------
+    # LoadBalancer for MicroK8s + MetalLB
+    # -------------------------
     service:
       type: LoadBalancer
