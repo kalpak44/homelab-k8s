@@ -16,16 +16,10 @@ spec:
 
   values:
 
-    # -------------------------------------------------
-    # Logging
-    # -------------------------------------------------
     logs:
       general:
         level: ERROR
 
-    # -------------------------------------------------
-    # EntryPoints & Redirects (Traefik v3 syntax)
-    # -------------------------------------------------
     ports:
       web:
         expose:
@@ -41,9 +35,6 @@ spec:
           enabled: true
           certResolver: cloudflare
 
-    # -------------------------------------------------
-    # ACME Certificate Resolver (Correct v3 schema)
-    # -------------------------------------------------
     certificatesResolvers:
       cloudflare:
         acme:
@@ -54,9 +45,6 @@ spec:
             resolvers:
               - "1.1.1.1:53"
 
-    # -------------------------------------------------
-    # Cloudflare DNS API Token (Best Practice)
-    # -------------------------------------------------
     env:
       - name: CF_DNS_API_TOKEN
         valueFrom:
@@ -64,16 +52,10 @@ spec:
             name: cloudflare-credentials
             key: apiKey
 
-    # -------------------------------------------------
-    # Disable Dashboard IngressRoute
-    # -------------------------------------------------
     ingressRoute:
       dashboard:
         enabled: false
 
-    # -------------------------------------------------
-    # Persistence for ACME certificates
-    # -------------------------------------------------
     persistence:
       enabled: true
       name: ssl-certs
@@ -81,30 +63,13 @@ spec:
       accessMode: ReadWriteOnce
       path: /ssl-certs
 
-    # -------------------------------------------------
-    # Init Container (fix volume permissions)
-    # Must run as root!
-    # -------------------------------------------------
-    deployment:
-      initContainers:
-        - name: volume-permissions
-          image: busybox:1.36
-          securityContext:
-            runAsUser: 0
-            runAsGroup: 0
-          command:
-            - sh
-            - -c
-            - |
-              touch /ssl-certs/acme-cloudflare.json
-              chmod 600 /ssl-certs/acme-cloudflare.json
-          volumeMounts:
-            - name: ssl-certs
-              mountPath: /ssl-certs
+    # IMPORTANT: rootless permission fix
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65532
+      runAsGroup: 65532
+      fsGroup: 65532
 
-    # -------------------------------------------------
-    # Default IngressClass
-    # -------------------------------------------------
     ingressClass:
       enabled: true
       isDefaultClass: true
