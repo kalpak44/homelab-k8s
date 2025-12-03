@@ -4,3 +4,5 @@ resources:
   - namespace.yaml
   - traefik-helmrepo.yaml
   - traefik-release.yaml
+  - traefik-crds-helmrepo.yaml
+  - traefik-crds-release.yaml
