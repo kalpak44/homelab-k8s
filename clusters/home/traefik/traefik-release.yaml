@@ -8,28 +8,28 @@ spec:
   chart:
     spec:
       chart: traefik
-      version: ">=34.0.0"
+      version: "37.4.0"
       sourceRef:
         kind: HelmRepository
         name: traefik
         namespace: flux-system
 
   values:
-    # -------------------------
-    # ACME + Cloudflare DNS-01
-    # -------------------------
+
+    #######################################################################
+    # ACME DNS-01 with Cloudflare
+    #######################################################################
     additionalArguments:
-      - "--certificatesresolvers.cloudflare.acme.tlschallenge=false"
       - "--certificatesresolvers.cloudflare.acme.dnschallenge=true"
       - "--certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare"
       - "--certificatesresolvers.cloudflare.acme.email=kalpak44@ya.ru"
-      - "--certificatesresolvers.cloudflare.acme.storage=/acme.json"
+      - "--certificatesresolvers.cloudflare.acme.storage=/data/acme.json"
 
-      # New HTTP -> HTTPS redirection syntax
-      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
+      # Redirect HTTP → HTTPS (correct new syntax)
+      - "--entrypoints.web.address=:8000"
+      - "--entrypoints.websecure.address=:8443"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
 
     env:
       - name: CF_API_TOKEN
@@ -38,18 +38,30 @@ spec:
             name: cloudflare-dns
             key: CF_API_TOKEN
 
-    # -------------------------
-    # Entrypoints
-    # -------------------------
+    #######################################################################
+    # Entrypoints (web + websecure)
+    #######################################################################
     ports:
       web:
-        expose: true
+        port: 8000
+        expose:
+          default: true
+        exposedPort: 80
+        protocol: TCP
+
       websecure:
+        port: 8443
+        expose:
+          default: true
+        exposedPort: 443
+        protocol: TCP
         tls:
           enabled: true
 
-    # -------------------------
-    # LoadBalancer for MicroK8s + MetalLB
-    # -------------------------
+    #######################################################################
+    # Traefik service
+    #######################################################################
     service:
+      enabled: true
       type: LoadBalancer
+      single: true
