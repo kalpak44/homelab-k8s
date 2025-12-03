@@ -1,24 +1,16 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
 metadata:
   name: nginx
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: "true"
-    traefik.ingress.kubernetes.io/router.tls.certresolver: cloudflare
+  namespace: test
 spec:
-  ingressClassName: traefik
-  rules:
-    - host: test.pavel-usanli.online
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: nginx
-                port:
-                  number: 80
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`test.pavel-usanli.online`)
+      kind: Rule
+      services:
+        - name: nginx
+          port: 80
   tls:
-    - hosts:
-        - test.pavel-usanli.online
+    certResolver: cloudflare
