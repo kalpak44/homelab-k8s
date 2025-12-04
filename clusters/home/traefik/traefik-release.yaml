@@ -15,11 +15,14 @@ spec:
         namespace: flux-system
 
   values:
-
     logs:
       general:
         level: INFO
-
+    api:
+      # -- Enable the dashboard
+      dashboard: true
+      # -- Configure API basePath
+      basePath: "/dashboard"  # @schema type:[string, null]; default: "/"
     ports:
       web:
         expose:
