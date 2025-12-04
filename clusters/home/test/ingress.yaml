@@ -7,8 +7,15 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`test.pavel-usanli.online`)
+    - match: Host(`test.pavel-ussanli.online`)
       kind: Rule
+      priority: 10
+      services:
+        - name: nginx
+          port: 80
+    - match: PathPrefix(`/`)
+      kind: Rule
+      priority: 1
       services:
         - name: nginx
           port: 80
