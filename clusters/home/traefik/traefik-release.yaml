@@ -63,7 +63,7 @@ spec:
       accessMode: ReadWriteOnce
       path: /ssl-certs
 
-    # IMPORTANT: rootless permission fix
+    # IMPORTANT: rootless permission fix.
     podSecurityContext:
       runAsNonRoot: true
       runAsUser: 65532
