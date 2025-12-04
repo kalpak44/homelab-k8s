@@ -14,5 +14,13 @@ spec:
         - name: nginx
           port: 80
 
+    # Fallback for IP-based access
+    - match: HostRegexp(`{any:.*}`)
+      kind: Rule
+      priority: 1
+      services:
+        - name: nginx
+          port: 80
+
   tls:
     certResolver: cloudflare
