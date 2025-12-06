@@ -32,6 +32,9 @@ spec:
           labels:
             traefik-service-label: private
 
+    ####################################################################
+    # ENTRYPOINTS INCLUDING PRIVATE HTTPS
+    ####################################################################
     ports:
       private:
         port: 8888
@@ -64,7 +67,7 @@ spec:
     ####################################################################
     api:
       dashboard: true
-      insecure: true   # still protected by private LB + basic-auth
+      insecure: false
 
     ingressRoute:
       dashboard:
