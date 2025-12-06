@@ -46,7 +46,7 @@ If you already have Flux controllers on the cluster and an SSH deploy key/secret
 ```shell
 kubectl apply -f clusters/home/infra/flux-system/
 ```
-The gotk-sync.yaml in this repo points to ssh://git@github.com/kalpak44/homelab-k8s on the main branch. If you fork or rename the repo, update this URL accordingly or re-bootstrap with Option A.
+The gotk-sync.yaml in this repo points to `ssh://git@github.com/kalpak44/homelab-k8s` on the main branch. If you fork or rename the repo, update this URL accordingly or re-bootstrap with Option A.
 
 Traefik and TLS
 - Traefik exposes HTTP(S) via LoadBalancer services. By default, it redirects HTTP to HTTPS.
