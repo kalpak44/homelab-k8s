@@ -27,24 +27,12 @@ spec:
               value: owncloud
             - name: MARIADB_AUTO_UPGRADE
               value: "1"
-          args:
-            - "--max-allowed-packet=128M"
-            - "--innodb-log-file-size=64M"
+          args: ["--max-allowed-packet=128M", "--innodb-log-file-size=64M"]
           ports:
             - containerPort: 3306
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
-          readinessProbe:
-            tcpSocket:
-              port: 3306
-            initialDelaySeconds: 10
-            periodSeconds: 5
-          livenessProbe:
-            tcpSocket:
-              port: 3306
-            initialDelaySeconds: 30
-            periodSeconds: 10
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
