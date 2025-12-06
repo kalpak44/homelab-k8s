@@ -28,6 +28,10 @@ spec:
           type: LoadBalancer
           labels:
             traefik-service-label: internal
+          ports:
+            - name: web
+              port: 80
+              protocol: TCP
 
     ports:
       web:
