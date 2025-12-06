@@ -7,8 +7,8 @@ spec:
   interval: 5m
   chart:
     spec:
-      chart: ocis
-      version: "*"
+      chart: owncloud
+      version: "0.8.0"
       sourceRef:
         kind: HelmRepository
         name: grafana
@@ -22,7 +22,7 @@ spec:
     fullnameOverride: owncloud
 
     ingress:
-      enabled: false  # You use Traefik IngressRoute instead
+      enabled: false
 
     persistence:
       enabled: true
@@ -35,6 +35,6 @@ spec:
       type: ClusterIP
       port: 80
 
-    ocis:
-      config:
-        OCS_METRICS_ENABLED: "false"
+    owncloud:
+      adminUsername: admin
+      adminPassword: admin
