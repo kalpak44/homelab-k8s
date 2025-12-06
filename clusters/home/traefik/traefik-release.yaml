@@ -70,7 +70,7 @@ spec:
       dashboard:
         enabled: true
         entryPoints:
-          - websecure
+          - private-web
         matchRule: Host(`traefik.local`)
         middlewares:
           - name: dashboard-auth
