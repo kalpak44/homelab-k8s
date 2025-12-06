@@ -36,8 +36,6 @@ spec:
         tls:
           enabled: true
           certResolver: cloudflare
-      private:
-        address: 192.168.1.61:80
     # Enables the dashboard in Secure Mode
     api:
       dashboard: true
@@ -83,7 +81,7 @@ spec:
         enabled: true
         matchRule: Host(`traefik.pavel-usanli.online`)
         entryPoints:
-          - private
+          - websecure
         middlewares:
           - name: dashboard-auth
 
