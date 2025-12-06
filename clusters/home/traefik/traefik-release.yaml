@@ -19,6 +19,19 @@ spec:
       type: LoadBalancer
       loadBalancerIP: "192.168.1.60"
 
+  additionalServices:
+    internal:
+      type: LoadBalancer
+      loadBalancerIP: "192.168.1.61"
+      ports:
+        dashboard:
+          port: 9443
+          exposedPort: 9443
+          protocol: TCP
+
+    additionalArguments:
+      - "--entrypoints.dashboard.address=:9443"
+
     logs:
       general:
         level: INFO
@@ -40,11 +53,9 @@ spec:
       dashboard:
         port: 9443
         expose:
-          default: true
+          default: false
+        exposedPort: 9443
         protocol: TCP
-        tls:
-          enabled: true
-          certResolver: cloudflare
 
     # Enables the dashboard in Secure Mode
     api:
