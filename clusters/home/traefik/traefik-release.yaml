@@ -16,6 +16,7 @@ spec:
         namespace: flux-system
 
   values:
+
     ####################################################################
     # PUBLIC LOADBALANCER (80/443)
     ####################################################################
@@ -36,11 +37,11 @@ spec:
     ####################################################################
     ports:
       private:
-        port: 9433
+        port: 8888
         expose:
           default: false
           internal: true
-        exposedPort: 443
+        exposedPort: 80
       web:
         port: 8000
         expose:
@@ -66,7 +67,7 @@ spec:
     ####################################################################
     api:
       dashboard: true
-      insecure: false
+      insecure: false   # still protected by private LB + basic-auth
 
     ingressRoute:
       dashboard:
@@ -76,8 +77,6 @@ spec:
         matchRule: Host(`traefik.internal`)
         middlewares:
           - name: dashboard-auth
-        tls:
-          secretName: ""  # ACME auto TLS
 
     ####################################################################
     # BASIC AUTH FOR DASHBOARD
