@@ -4,7 +4,6 @@ kind: Kustomization
 namespace: home
 
 resources:
-  - namespace.yaml
   - ingress.yaml
   - grafana-helmrepo.yaml
   - grafana-release.yaml
