@@ -29,11 +29,10 @@ spec:
         internal:
           type: LoadBalancer
         ports:
-          private:
-            port: 8888
-            exposedPort: 80
-            expose:
-              default: false
+          - name: internal
+            port: 80
+            protocol: TCP
+            targetPort: 8888
 
     ####################################################################
     # ENTRYPOINT's INCLUDING PRIVATE HTTPS
