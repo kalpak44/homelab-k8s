@@ -23,11 +23,6 @@ spec:
     internal:
       type: LoadBalancer
       loadBalancerIP: "192.168.1.61"
-      ports:
-        dashboard:
-          port: 80
-          exposedPort: 80
-          protocol: TCP
 
     logs:
       general:
