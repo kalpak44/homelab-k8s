@@ -68,7 +68,7 @@ spec:
       dashboard:
         enabled: true
         entryPoints:
-          - dashboard
+          - websecure
         matchRule: Host(`traefik.local`)
         middlewares:
           - name: dashboard-auth
