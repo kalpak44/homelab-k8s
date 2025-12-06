@@ -28,12 +28,6 @@ spec:
       additionalServices:
         internal:
           type: LoadBalancer
-          labels:
-            traefik-service-label: private
-          expose:
-            default: false
-            internal: true
-            exposedPort: 80
 
     ####################################################################
     # ENTRYPOINT's INCLUDING PRIVATE HTTPS
