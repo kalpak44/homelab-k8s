@@ -8,7 +8,7 @@ resources:
   - portainer
   - router
   - grafana
-#  - owncloud
+#  - owncloud wip
   - namespace.yaml
   - configmap.yaml
   - deployment.yaml
