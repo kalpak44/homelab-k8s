@@ -25,11 +25,6 @@ spec:
         internal:
           type: LoadBalancer
           loadBalancerIP: "192.168.1.61"
-          ports:
-            - name: dashboard
-              port: 80
-              targetPort: dashboard
-              protocol: TCP
 
     logs:
       general:
@@ -106,7 +101,7 @@ spec:
     ingressRoute:
       dashboard:
         enabled: true
-        matchRule: Host(`traefik.lan`)
+        matchRule: Host(`traefik.local`)
         entryPoints:
           - dashboard
         middlewares:
