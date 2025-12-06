@@ -29,8 +29,15 @@ spec:
       additionalServices:
         internal:
           type: LoadBalancer
+          annotations:
+            traefik.ingress.kubernetes.io/service.internal: "true"
           labels:
             traefik-service-label: private
+          spec:
+            ports:
+              - name: private
+                port: 80
+                targetPort: 8888
 
     ####################################################################
     # ENTRYPOINTS INCLUDING PRIVATE HTTPS
