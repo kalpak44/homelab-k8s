@@ -28,10 +28,12 @@ spec:
       additionalServices:
         internal:
           type: LoadBalancer
-        spec:
-          ports:
-            - name: private
-              port: 80
+        ports:
+          private:
+            port: 8888
+            exposedPort: 80
+            expose:
+              default: false
 
     ####################################################################
     # ENTRYPOINT's INCLUDING PRIVATE HTTPS
@@ -39,7 +41,6 @@ spec:
     ports:
       private:
         port: 8888
-        exposedPort: 80
         expose:
           default: false
 
