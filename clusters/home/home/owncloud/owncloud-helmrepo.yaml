@@ -5,4 +5,4 @@ metadata:
   namespace: home
 spec:
   interval: 1h
-  url:  https://owncloud-docker.github.io/helm-charts
+  url: https://owncloud-docker.github.io/helm-charts

@@ -11,7 +11,7 @@ spec:
       version: "0.8.0"
       sourceRef:
         kind: HelmRepository
-        name: grafana
+        name: owncloud
         namespace: home
       interval: 1m
 
@@ -27,9 +27,6 @@ spec:
     persistence:
       enabled: true
       existingClaim: owncloud-data
-      size: 100Gi
-      accessModes:
-        - ReadWriteOnce
 
     service:
       type: ClusterIP
