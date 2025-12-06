@@ -3,6 +3,6 @@ kind: Kustomization
 resources:
   - flux-system
 #  - traefik
-  - home
+#  - home
 #  - weave-gitops
-  - test
+#  - test
