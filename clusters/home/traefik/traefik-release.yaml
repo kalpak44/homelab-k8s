@@ -45,13 +45,21 @@ spec:
           enabled: true
           certResolver: cloudflare
 
-#      # Internal API entrypoint (8080)
+      # Internal API entrypoint (8080)
       traefik:
         port: 8080
         expose:
           default: false
         hostIP: 192.168.1.60
         exposedPort: 8080
+        protocol: TCP
+
+      # Internal metrics entrypoint (9100)
+      metrics:
+        port: 9100
+        expose:
+          default: false
+        exposedPort: 9100
         protocol: TCP
 
     ####################################################################
@@ -65,7 +73,7 @@ spec:
       dashboard:
         enabled: true
         entryPoints:
-          - dashboard
+          - websecure
         matchRule: Host(`traefik.local`)
         middlewares:
           - name: dashboard-auth
