@@ -9,3 +9,4 @@ resources:
   - owncloud-mariadb.yaml
   - owncloud-redis.yaml
   - owncloud-deployment.yaml
+  - owncloud-secrets.yaml

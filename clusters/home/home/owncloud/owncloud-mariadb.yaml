@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -18,16 +19,27 @@ spec:
           image: mariadb:10.11
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: owncloud
+              valueFrom:
+                secretKeyRef:
+                  name: owncloud-secrets
+                  key: db-root-password
             - name: MYSQL_USER
               value: owncloud
             - name: MYSQL_PASSWORD
-              value: owncloud
+              valueFrom:
+                secretKeyRef:
+                  name: owncloud-secrets
+                  key: db-password
             - name: MYSQL_DATABASE
               value: owncloud
             - name: MARIADB_AUTO_UPGRADE
               value: "1"
-          args: ["--max-allowed-packet=128M", "--innodb-log-file-size=64M"]
+          # DB settings recommended for ownCloud
+          args:
+            - "--max-allowed-packet=128M"
+            - "--innodb-log-file-size=64M"
+            - "--transaction-isolation=READ-COMMITTED"
+            - "--binlog-format=ROW"
           ports:
             - containerPort: 3306
           volumeMounts:

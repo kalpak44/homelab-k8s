@@ -15,37 +15,63 @@ spec:
     spec:
       containers:
         - name: owncloud
-          image: owncloud/server:10.15.3
+          image: owncloud/server:10.16.0
           ports:
             - containerPort: 8080
           env:
             - name: OWNCLOUD_DOMAIN
-              value: owncloud.internal
+              value: "owncloud.internal"
             - name: OWNCLOUD_TRUSTED_DOMAINS
-              value: owncloud.internal
+              value: "owncloud.internal"
             - name: OWNCLOUD_DB_TYPE
-              value: mysql
+              value: "mysql"
             - name: OWNCLOUD_DB_NAME
-              value: owncloud
+              value: "owncloud"
             - name: OWNCLOUD_DB_USERNAME
-              value: owncloud
+              value: "owncloud"
             - name: OWNCLOUD_DB_PASSWORD
-              value: owncloud
+              valueFrom:
+                secretKeyRef:
+                  name: owncloud-secrets
+                  key: db-password
             - name: OWNCLOUD_DB_HOST
-              value: owncloud-mariadb
+              value: "owncloud-mariadb"
             - name: OWNCLOUD_ADMIN_USERNAME
-              value: admin
+              value: "admin"
             - name: OWNCLOUD_ADMIN_PASSWORD
-              value: admin
+              valueFrom:
+                secretKeyRef:
+                  name: owncloud-secrets
+                  key: admin-password
             - name: OWNCLOUD_MYSQL_UTF8MB4
               value: "true"
             - name: OWNCLOUD_REDIS_ENABLED
               value: "true"
             - name: OWNCLOUD_REDIS_HOST
-              value: owncloud-redis
+              value: "owncloud-redis"
+            # sensible limits from docs/examples
+            - name: OWNCLOUD_UPLOAD_LIMIT
+              value: "512M"
+            - name: OWNCLOUD_MAX_UPLOAD
+              value: "512M"
+            - name: OWNCLOUD_MEMORY_LIMIT
+              value: "512M"
           volumeMounts:
             - name: files
+              # inside container; backed by /data/owncloud-files on the node
               mountPath: /mnt/data
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 60
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
       volumes:
         - name: files
           persistentVolumeClaim:
