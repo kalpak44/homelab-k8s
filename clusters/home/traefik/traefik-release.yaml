@@ -51,11 +51,11 @@ spec:
 #        expose:
 #          default: false
 #
-#      # Custom private entrypoint (8081)
-#      dashboard:
-#        port: 8081
-#        expose:
-#          default: false
+      # Custom private entrypoint (8081)
+      dashboard:
+        port: 8080
+        expose:
+          default: false
 
     ####################################################################
     # DASHBOARD ROUTING
@@ -68,7 +68,7 @@ spec:
       dashboard:
         enabled: true
         entryPoints:
-          - websecure
+          - dashboard
         matchRule: Host(`traefik.local`)
         middlewares:
           - name: dashboard-auth
