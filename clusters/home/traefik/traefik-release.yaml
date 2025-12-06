@@ -40,7 +40,7 @@ spec:
         expose:
           default: false
           internal: true
-        exposedPort: 80
+        exposedPort: 443
       web:
         port: 8000
         expose:
