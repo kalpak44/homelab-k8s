@@ -50,6 +50,10 @@ spec:
         tls:
           enabled: true
           certResolver: cloudflare
+    # Enables the dashboard in Secure Mode
+    api:
+      dashboard: true
+      insecure: false
 
     certificatesResolvers:
       cloudflare:
