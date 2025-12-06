@@ -21,6 +21,8 @@ spec:
     # PUBLIC LOADBALANCER (80/443)
     ####################################################################
     service:
+      enabled: true
+      single: true
       type: LoadBalancer
       loadBalancerIP: "192.168.1.60"
 
@@ -45,22 +47,22 @@ spec:
           enabled: true
           certResolver: cloudflare
 
-      # Internal API entrypoint (8080)
-      traefik:
-        port: 8080
-        expose:
-          default: false
-        hostIP: 192.168.1.50
-        exposedPort: 8080
-        protocol: TCP
-
-      # Internal metrics entrypoint (9100)
-      metrics:
-        port: 9100
-        expose:
-          default: false
-        exposedPort: 9100
-        protocol: TCP
+#      # Internal API entrypoint (8080)
+#      traefik:
+#        port: 8080
+#        expose:
+#          default: false
+#        hostIP: 192.168.1.50
+#        exposedPort: 8080
+#        protocol: TCP
+#
+#      # Internal metrics entrypoint (9100)
+#      metrics:
+#        port: 9100
+#        expose:
+#          default: false
+#        exposedPort: 9100
+#        protocol: TCP
 
     ####################################################################
     # DASHBOARD ROUTING
