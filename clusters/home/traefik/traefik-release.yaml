@@ -15,20 +15,30 @@ spec:
         namespace: flux-system
 
   values:
+    # Public LoadBalancer (Internet)
     service:
       type: LoadBalancer
       loadBalancerIP: "192.168.1.60"
 
-  additionalServices:
-    internal:
-      type: LoadBalancer
-      loadBalancerIP: "192.168.1.61"
+      # Private LoadBalancer for internal-only services
+      additionalServices:
+        internal:
+          type: LoadBalancer
+          loadBalancerIP: "192.168.1.61"
+          ports:
+            - name: dashboard
+              port: 80
+              targetPort: dashboard
+              protocol: TCP
 
     logs:
       general:
         level: INFO
+
     ports:
+      # Public HTTP entryPoint
       web:
+        port: 80
         expose:
           default: true
         redirections:
@@ -37,11 +47,14 @@ spec:
             scheme: https
             permanent: true
 
+      # Public HTTPS entryPoint
       websecure:
+        port: 443
         tls:
           enabled: true
           certResolver: cloudflare
 
+      # Private dashboard entryPoint (HTTP only)
       dashboard:
         port: 80
         expose:
@@ -49,12 +62,12 @@ spec:
         exposedPort: 80
         protocol: TCP
 
-    # Enables the dashboard in Secure Mode
+    # Dashboard
     api:
       dashboard: true
       insecure: true
 
-    # Creates a BasiAuth Middleware for the Dashboard Security
+    # Basic auth for dashboard
     extraObjects:
       - apiVersion: v1
         kind: Secret
@@ -64,6 +77,7 @@ spec:
         stringData:
           username: admin
           password: "admin"
+
       - apiVersion: traefik.io/v1alpha1
         kind: Middleware
         metadata:
@@ -92,7 +106,7 @@ spec:
     ingressRoute:
       dashboard:
         enabled: true
-        matchRule: Host(`traefik.pavel-usanli.online`)
+        matchRule: Host(`traefik.lan`)
         entryPoints:
           - dashboard
         middlewares:
@@ -105,7 +119,6 @@ spec:
       accessMode: ReadWriteOnce
       path: /ssl-certs
 
-    # IMPORTANT: rootless permission fix
     podSecurityContext:
       runAsNonRoot: true
       runAsUser: 65532
