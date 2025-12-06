@@ -28,6 +28,10 @@ spec:
       additionalServices:
         internal:
           type: LoadBalancer
+        spec:
+          ports:
+            - name: private
+              port: 80
 
     ####################################################################
     # ENTRYPOINT's INCLUDING PRIVATE HTTPS
