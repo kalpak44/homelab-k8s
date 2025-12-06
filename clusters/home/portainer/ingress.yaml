@@ -11,4 +11,4 @@ spec:
       kind: Rule
       services:
         - name: portainer-external
-          kind: TraefikService
+          port: 9000
