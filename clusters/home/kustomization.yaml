@@ -4,6 +4,5 @@ resources:
   - flux-system
   - traefik
   - home
-  - portainer
 #  - weave-gitops
   - test

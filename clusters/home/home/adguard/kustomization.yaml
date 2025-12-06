@@ -4,10 +4,6 @@ kind: Kustomization
 namespace: home
 
 resources:
-  - adguard
-  - portainer
-  - namespace.yaml
-  - configmap.yaml
-  - deployment.yaml
   - service.yaml
+  - endpoint.yaml
   - ingress.yaml
