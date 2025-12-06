@@ -4,8 +4,8 @@ kind: Kustomization
 namespace: home
 
 resources:
-  - landing-page
-  - adguard
-  - portainer
-  - router
-  - grafana
+  - namespace.yaml
+  - configmap.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
