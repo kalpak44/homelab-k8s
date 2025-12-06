@@ -1,8 +1,8 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: owncloud
+  name: ocis
   namespace: home
 spec:
   interval: 1h
-  url: https://owncloud-docker.github.io/helm-charts
+  url: https://owncloud.github.io/ocis-charts/

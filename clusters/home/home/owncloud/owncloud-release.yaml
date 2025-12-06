@@ -1,37 +1,32 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: owncloud
+  name: ocis
   namespace: home
 spec:
   interval: 5m
   chart:
     spec:
-      chart: owncloud
-      version: "0.8.0"
+      chart: ocis
+      version: "*"
       sourceRef:
         kind: HelmRepository
-        name: owncloud
+        name: ocis
         namespace: home
-      interval: 1m
 
   install:
     createNamespace: false
 
   values:
-    fullnameOverride: owncloud
-
-    ingress:
-      enabled: false
-
     persistence:
       enabled: true
       existingClaim: owncloud-data
 
-    service:
-      type: ClusterIP
-      port: 80
+    ingress:
+      enabled: false
 
-    owncloud:
-      adminUsername: admin
-      adminPassword: admin
+    ocis:
+      config:
+        OCIS_INSECURE: "true"
+        ADMIN_USERNAME: "admin"
+        ADMIN_PASSWORD: "admin"
