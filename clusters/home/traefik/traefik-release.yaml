@@ -50,7 +50,7 @@ spec:
         port: 8080
         expose:
           default: false
-        hostIP: 192.168.1.60
+        hostIP: 192.168.1.50
         exposedPort: 8080
         protocol: TCP
 
