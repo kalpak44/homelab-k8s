@@ -35,9 +35,9 @@ spec:
     ports:
       private:
         port: 8888
+        exposedPort: 80
         expose:
-          internal: true
-          external: false
+          default: false
 
       web:
         port: 8000
