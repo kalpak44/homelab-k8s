@@ -10,5 +10,5 @@ spec:
     - match: Host(`portainer.internal`)
       kind: Rule
       services:
-        - name: portainer
-          port: 9000
+        - name: portainer-external
+          kind: TraefikService
