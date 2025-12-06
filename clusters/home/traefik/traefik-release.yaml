@@ -34,7 +34,7 @@ spec:
 
     ports:
       private-web:
-        port: 8000
+        port: 8888
         expose:
           default: false
           internal: true
