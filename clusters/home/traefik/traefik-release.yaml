@@ -29,16 +29,22 @@ spec:
       additionalServices:
         internal:
           type: LoadBalancer
+          ports:
+            - port: 443
+              name: private
           labels:
             traefik-service-label: private
 
     ports:
       private:
-        port: 8888
+        port: 9443
         expose:
           default: false
           internal: true
-        exposedPort: 80
+        exposedPort: 443
+        tls:
+          enabled: true
+          certResolver: cloudflare
       web:
         port: 8000
         expose:
@@ -74,6 +80,8 @@ spec:
         matchRule: Host(`traefik.home.lan`)
         middlewares:
           - name: dashboard-auth
+        tls:
+          certResolver: cloudflare
 
     ####################################################################
     # BASIC AUTH FOR DASHBOARD
