@@ -51,7 +51,7 @@ The gotk-sync.yaml in this repo points to `ssh://git@github.com/kalpak44/homelab
 Traefik and TLS
 - Traefik exposes HTTP(S) via LoadBalancer services. By default, it redirects HTTP to HTTPS.
 - ACME DNS-01 via Cloudflare is enabled with the certificatesResolver named cloudflare.
-- ACME email and other options are set in clusters/home/infra/traefik/traefik-release.yaml. Adjust as needed (e.g., email, domains via Ingress/IngressRoute).
+- ACME email and other options are set in `clusters/home/infra/traefik/traefik-release.yaml`. Adjust as needed (e.g., email, domains via Ingress/IngressRoute).
 
 Weave GitOps UI (optional)
 Manifests are provided under clusters/home/weave-gitops. After Flux applies them, expose and secure access per your environment.
