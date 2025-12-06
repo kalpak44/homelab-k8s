@@ -36,15 +36,15 @@ spec:
             exposedPort: 80
 
     ####################################################################
-    # ENTRYPOINTS INCLUDING PRIVATE HTTPS
+    # ENTRYPOINT's INCLUDING PRIVATE HTTPS
     ####################################################################
     ports:
       private:
-        private:
-          port: 8888
-          expose:
-            internal: true
-            external: false
+        port: 8888
+        expose:
+          internal: true
+          external: false
+
       web:
         port: 8000
         expose:
