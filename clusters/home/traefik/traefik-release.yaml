@@ -36,12 +36,15 @@ spec:
         tls:
           enabled: true
           certResolver: cloudflare
+      private:
+        expose:
+          default: true
     # Enables the dashboard in Secure Mode
     api:
       dashboard: true
-      insecure: false
+      insecure: true
 
-    # Creates a BasiAuth Middleware and Secret for the Dashboard Security
+    # Creates a BasiAuth Middleware for the Dashboard Security
     extraObjects:
       - apiVersion: v1
         kind: Secret
@@ -50,7 +53,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: admin
-          password: "P@ssw0rd"      # Replace with an Actual Password
+          password: "P@ssw0rd"
       - apiVersion: traefik.io/v1alpha1
         kind: Middleware
         metadata:
@@ -81,7 +84,7 @@ spec:
         enabled: true
         matchRule: Host(`traefik.pavel-usanli.online`)
         entryPoints:
-          - websecure
+          - private
         middlewares:
           - name: dashboard-auth
 
