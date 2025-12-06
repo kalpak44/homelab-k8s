@@ -1,0 +1,40 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: owncloud
+  namespace: home
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: ocis
+      version: "*"
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: home
+      interval: 1m
+
+  install:
+    createNamespace: false
+
+  values:
+    fullnameOverride: owncloud
+
+    ingress:
+      enabled: false  # You use Traefik IngressRoute instead
+
+    persistence:
+      enabled: true
+      existingClaim: owncloud-data
+      size: 100Gi
+      accessModes:
+        - ReadWriteOnce
+
+    service:
+      type: ClusterIP
+      port: 80
+
+    ocis:
+      config:
+        OCS_METRICS_ENABLED: "false"
