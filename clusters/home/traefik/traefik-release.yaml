@@ -29,7 +29,7 @@ spec:
           labels:
             traefik-service-label: internal
           ports:
-            - name: web
+            - name: internal
               port: 80
               protocol: TCP
 
