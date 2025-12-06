@@ -16,7 +16,11 @@ spec:
       containers:
         - name: redis
           image: redis:6
-          args: ["--databases", "1"]
+          args:
+            - "--databases"
+            - "1"
+            - "--appendonly"
+            - "yes"
           ports:
             - containerPort: 6379
 ---
