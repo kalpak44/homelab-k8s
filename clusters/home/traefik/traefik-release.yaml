@@ -3,6 +3,7 @@ kind: HelmRelease
 metadata:
   name: traefik
   namespace: traefik
+
 spec:
   interval: 5m
   chart:
@@ -15,57 +16,79 @@ spec:
         namespace: flux-system
 
   values:
-    # Public LoadBalancer (Internet)
+    ####################################################################
+    # LOAD BALANCERS
+    ####################################################################
     service:
       type: LoadBalancer
       loadBalancerIP: "192.168.1.60"
 
-      # Private LoadBalancer for internal-only services
+      # SECOND (PRIVATE) LOADBALANCER
       additionalServices:
         internal:
           type: LoadBalancer
           loadBalancerIP: "192.168.1.61"
-          expose:
-            internal: true
-          exposePublic: false
+          spec:
+            ports:
+              - name: dashboard
+                port: 8080
+                targetPort: traefik          # maps to internal API/dashboard
+              - name: private
+                port: 8081
+                targetPort: dashboard        # custom entryPoint
 
-    logs:
-      general:
-        level: INFO
+    ####################################################################
+    # ENTRYPOINTS
+    ####################################################################
+    additionalArguments:
+      - "--entrypoints.dashboard.address=:8081"   # private entryPoint
 
     ports:
-      # Public HTTP entryPoint
       web:
-        port: 80
+        port: 8000
         expose:
           default: true
+        exposedPort: 80
         redirections:
           entryPoint:
             to: websecure
             scheme: https
             permanent: true
 
-      # Public HTTPS entryPoint
       websecure:
-        port: 443
+        port: 8443
+        expose:
+          default: true
+        exposedPort: 443
         tls:
           enabled: true
           certResolver: cloudflare
 
-      # Private dashboard entryPoint (HTTP only)
-      dashboard:
-        port: 80
+      # default internal Traefik entrypoint (8080)
+      traefik:
+        port: 8080
         expose:
           default: false
-        exposedPort: 80
-        protocol: TCP
 
-    # Dashboard
+    ####################################################################
+    # DASHBOARD
+    ####################################################################
     api:
       dashboard: true
-      insecure: true
+      insecure: true    # still protected by basic auth + private LB
 
-    # Basic auth for dashboard
+    ingressRoute:
+      dashboard:
+        enabled: true
+        matchRule: Host(`traefik.local`)
+        entryPoints:
+          - dashboard        # PRIVATE ONLY
+        middlewares:
+          - name: dashboard-auth
+
+    ####################################################################
+    # AUTH (BASIC AUTH MIDDLEWARE)
+    ####################################################################
     extraObjects:
       - apiVersion: v1
         kind: Secret
@@ -74,7 +97,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: admin
-          password: "admin"
+          password: admin
 
       - apiVersion: traefik.io/v1alpha1
         kind: Middleware
@@ -84,6 +107,9 @@ spec:
           basicAuth:
             secret: dashboard-auth-secret
 
+    ####################################################################
+    # ACME DNS (CLOUDFLARE)
+    ####################################################################
     certificatesResolvers:
       cloudflare:
         acme:
@@ -101,15 +127,9 @@ spec:
             name: cloudflare-credentials
             key: apiKey
 
-    ingressRoute:
-      dashboard:
-        enabled: true
-        matchRule: Host(`traefik.local`)
-        entryPoints:
-          - dashboard
-        middlewares:
-          - name: dashboard-auth
-
+    ####################################################################
+    # PERSISTENCE FOR ACME JSON
+    ####################################################################
     persistence:
       enabled: true
       name: ssl-certs
@@ -117,12 +137,19 @@ spec:
       accessMode: ReadWriteOnce
       path: /ssl-certs
 
+    ####################################################################
+    # MISC
+    ####################################################################
+    logs:
+      general:
+        level: INFO
+
+    ingressClass:
+      enabled: true
+      isDefaultClass: true
+
     podSecurityContext:
       runAsNonRoot: true
       runAsUser: 65532
       runAsGroup: 65532
       fsGroup: 65532
-
-    ingressClass:
-      enabled: true
-      isDefaultClass: true
