@@ -13,3 +13,4 @@ spec:
       services:
         - name: owncloud
           port: 80
+          scheme: http
