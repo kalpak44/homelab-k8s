@@ -48,7 +48,6 @@ spec:
       - "--entrypoints.dashboard.address=:8081"
 
     ports:
-
       web:
         port: 8000
         expose:
