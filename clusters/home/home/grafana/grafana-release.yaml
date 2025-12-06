@@ -16,7 +16,7 @@ spec:
 
   values:
     ####################################################################
-    # ADMIN CREDENTIALS (HARDCODED - CHANGE IN REAL ENV!)
+    # ADMIN CREDENTIALS (HARDCODED - CHANGE IN)
     ####################################################################
     adminUser: admin
     adminPassword: admin
