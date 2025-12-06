@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: owncloud-mariadb
+  namespace: home
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: owncloud-mariadb
+  template:
+    metadata:
+      labels:
+        app: owncloud-mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: mariadb:10.11
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: owncloud
+            - name: MYSQL_USER
+              value: owncloud
+            - name: MYSQL_PASSWORD
+              value: owncloud
+            - name: MYSQL_DATABASE
+              value: owncloud
+            - name: MARIADB_AUTO_UPGRADE
+              value: "1"
+          args: ["--max-allowed-packet=128M", "--innodb-log-file-size=64M"]
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: owncloud-mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: owncloud-mariadb
+  namespace: home
+spec:
+  type: ClusterIP
+  selector:
+    app: owncloud-mariadb
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306

@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: owncloud
+  namespace: home
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: owncloud
+  template:
+    metadata:
+      labels:
+        app: owncloud
+    spec:
+      containers:
+        - name: owncloud
+          image: owncloud/server:10.15.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: OWNCLOUD_DOMAIN
+              value: owncloud.internal
+            - name: OWNCLOUD_TRUSTED_DOMAINS
+              value: owncloud.internal
+            - name: OWNCLOUD_DB_TYPE
+              value: mysql
+            - name: OWNCLOUD_DB_NAME
+              value: owncloud
+            - name: OWNCLOUD_DB_USERNAME
+              value: owncloud
+            - name: OWNCLOUD_DB_PASSWORD
+              value: owncloud
+            - name: OWNCLOUD_DB_HOST
+              value: owncloud-mariadb
+            - name: OWNCLOUD_ADMIN_USERNAME
+              value: admin
+            - name: OWNCLOUD_ADMIN_PASSWORD
+              value: admin
+            - name: OWNCLOUD_MYSQL_UTF8MB4
+              value: "true"
+            - name: OWNCLOUD_REDIS_ENABLED
+              value: "true"
+            - name: OWNCLOUD_REDIS_HOST
+              value: owncloud-redis
+          volumeMounts:
+            - name: files
+              mountPath: /data/owncloud-files/
+      volumes:
+        - name: files
+          persistentVolumeClaim:
+            claimName: owncloud-files
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: owncloud
+  namespace: home
+spec:
+  type: ClusterIP
+  selector:
+    app: owncloud
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

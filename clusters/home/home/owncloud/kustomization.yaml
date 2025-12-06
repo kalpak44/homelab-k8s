@@ -5,6 +5,7 @@ namespace: home
 
 resources:
   - ingress.yaml
-  - owncloud-helmrepo.yaml
   - owncloud-pv.yaml
-  - owncloud-release.yaml
+  - owncloud-mariadb.yaml
+  - owncloud-redis.yaml
+  - owncloud-deployment.yaml
