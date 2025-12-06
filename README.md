@@ -53,9 +53,6 @@ Traefik and TLS
 - ACME DNS-01 via Cloudflare is enabled with the certificatesResolver named cloudflare.
 - ACME email and other options are set in `clusters/home/infra/traefik/traefik-release.yaml`. Adjust as needed (e.g., email, domains via Ingress/IngressRoute).
 
-Weave GitOps UI (optional)
-Manifests are provided under clusters/home/weave-gitops. After Flux applies them, expose and secure access per your environment.
-
 Troubleshooting
 - Secret not found: Ensure cloudflare-credentials exists in the traefik namespace and contains the apiKey key before Traefik starts certificate requests.
 - Flux not syncing: Check flux-system namespace logs (source-controller, kustomize-controller). Verify repository URL/SSH keys match your repo.
