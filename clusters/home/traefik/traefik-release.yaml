@@ -53,6 +53,8 @@ spec:
               - name: internal
                 port: 80
                 protocol: TCP
+                targetPort: 80
+
 
 #      # Internal API entrypoint (8080)
 #      traefik:
