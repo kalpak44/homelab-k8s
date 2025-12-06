@@ -71,7 +71,7 @@ spec:
         enabled: true
         entryPoints:
           - private
-        matchRule: Host(`traefik.home.lan`)
+        matchRule: Host(`traefik.internal`)
         middlewares:
           - name: dashboard-auth
 
