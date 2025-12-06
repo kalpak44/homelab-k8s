@@ -77,6 +77,8 @@ spec:
         matchRule: Host(`traefik.internal`)
         middlewares:
           - name: dashboard-auth
+        tls:
+          secretName: ""  # ACME auto TLS
 
     ####################################################################
     # BASIC AUTH FOR DASHBOARD
