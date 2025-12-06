@@ -46,6 +46,7 @@ spec:
         additionalServices:
           internal:
             type: LoadBalancer
+            loadBalancerIP: "192.168.1.61"
             labels:
               traefik-service-label: internal
             ports:
