@@ -12,11 +12,11 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: grafana
-        namespace: flux-system
+        namespace: home
 
   values:
     ####################################################################
-    # ADMIN CREDENTIALS (HARDCODED)
+    # ADMIN CREDENTIALS (HARDCODED - CHANGE IN REAL ENV!)
     ####################################################################
     adminUser: admin
     adminPassword: admin
@@ -31,14 +31,15 @@ spec:
       size: 5Gi
 
     ####################################################################
-    # SERVICE (ClusterIP only)
+    # SERVICE (ClusterIP on port 80, matching IngressRoute)
     ####################################################################
     service:
       type: ClusterIP
       port: 80
+      targetPort: 3000
 
     ####################################################################
-    # DISABLE BUILT-IN INGRESS
+    # DISABLE BUILT-IN INGRESS (we use Traefik IngressRoute instead)
     ####################################################################
     ingress:
       enabled: false

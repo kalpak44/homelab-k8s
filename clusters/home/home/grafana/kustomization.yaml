@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: home
 
 resources:
+  - namespace.yaml
   - ingress.yaml
-  - kustomization.yaml
-  - traefik-helmrepo.yaml
-  - traefik-release.yaml
+  - grafana-helmrepo.yaml
+  - grafana-release.yaml
