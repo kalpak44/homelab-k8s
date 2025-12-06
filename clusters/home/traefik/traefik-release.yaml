@@ -16,34 +16,39 @@ spec:
         namespace: flux-system
 
   values:
+
     ####################################################################
-    # LOAD BALANCERS
+    # PUBLIC LOADBALANCER (80/443)
     ####################################################################
     service:
       type: LoadBalancer
       loadBalancerIP: "192.168.1.60"
 
-      # SECOND (PRIVATE) LOADBALANCER
+      ####################################################################
+      # PRIVATE LOADBALANCER (8080 = dashboard, 8081 = private apps)
+      ####################################################################
       additionalServices:
         internal:
           type: LoadBalancer
           loadBalancerIP: "192.168.1.61"
           spec:
             ports:
-              - name: dashboard
+              - name: traefik-api
                 port: 8080
-                targetPort: traefik          # maps to internal API/dashboard
+                targetPort: traefik       # Built-in API/dashboard entrypoint
               - name: private
                 port: 8081
-                targetPort: dashboard        # custom entryPoint
+                targetPort: dashboard     # Custom private entrypoint
 
     ####################################################################
-    # ENTRYPOINTS
+    # TRAEFIK ENTRYPOINTS
     ####################################################################
     additionalArguments:
-      - "--entrypoints.dashboard.address=:8081"   # private entryPoint
+      # Add a private entrypoint called "dashboard" on port 8081
+      - "--entrypoints.dashboard.address=:8081"
 
     ports:
+
       web:
         port: 8000
         expose:
@@ -64,30 +69,36 @@ spec:
           enabled: true
           certResolver: cloudflare
 
-      # default internal Traefik entrypoint (8080)
+      # Internal API entrypoint (8080)
       traefik:
         port: 8080
         expose:
           default: false
 
+      # Custom private entrypoint (8081)
+      dashboard:
+        port: 8081
+        expose:
+          default: false
+
     ####################################################################
-    # DASHBOARD
+    # DASHBOARD ROUTING
     ####################################################################
     api:
       dashboard: true
-      insecure: true    # still protected by basic auth + private LB
+      insecure: true   # still protected by private LB + basic-auth
 
     ingressRoute:
       dashboard:
         enabled: true
-        matchRule: Host(`traefik.local`)
         entryPoints:
-          - dashboard        # PRIVATE ONLY
+          - dashboard
+        matchRule: Host(`traefik.local`)
         middlewares:
           - name: dashboard-auth
 
     ####################################################################
-    # AUTH (BASIC AUTH MIDDLEWARE)
+    # BASIC AUTH FOR DASHBOARD
     ####################################################################
     extraObjects:
       - apiVersion: v1
@@ -108,13 +119,13 @@ spec:
             secret: dashboard-auth-secret
 
     ####################################################################
-    # ACME DNS (CLOUDFLARE)
+    # ACME (CLOUDFLARE DNS01)
     ####################################################################
     certificatesResolvers:
       cloudflare:
         acme:
           email: "kalpak44@ya.ru"
-          storage: "/ssl-certs/acme-cloudflare.json"
+          storage: "/ssl-certs/acme.json"
           dnsChallenge:
             provider: cloudflare
             resolvers:
@@ -128,7 +139,7 @@ spec:
             key: apiKey
 
     ####################################################################
-    # PERSISTENCE FOR ACME JSON
+    # ACME STORAGE (PVC)
     ####################################################################
     persistence:
       enabled: true
