@@ -4,5 +4,6 @@ kind: Kustomization
 namespace: home
 
 resources:
-  - service.yaml
+  - external-service.yaml
+  - servers-transport.yaml
   - ingress.yaml
