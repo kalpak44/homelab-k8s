@@ -45,7 +45,7 @@ spec:
               value: owncloud-redis
           volumeMounts:
             - name: files
-              mountPath: /data/owncloud-files/
+              mountPath: /mnt/data
       volumes:
         - name: files
           persistentVolumeClaim:
