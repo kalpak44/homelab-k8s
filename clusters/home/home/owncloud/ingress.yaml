@@ -9,8 +9,6 @@ spec:
   routes:
     - match: Host(`owncloud.internal`)
       kind: Rule
-      priority: 10
       services:
         - name: owncloud
           port: 80
-          scheme: http

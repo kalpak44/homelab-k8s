@@ -6,7 +6,7 @@ namespace: home
 resources:
   - ingress.yaml
   - owncloud-pv.yaml
+  - owncloud-secrets.yaml
   - owncloud-mariadb.yaml
   - owncloud-redis.yaml
   - owncloud-deployment.yaml
-  - owncloud-secrets.yaml

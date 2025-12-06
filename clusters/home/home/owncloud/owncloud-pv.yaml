@@ -10,7 +10,6 @@ spec:
     - ReadWriteOnce
   storageClassName: local-storage
   hostPath:
-    # host path where ownCloud data will be stored
     path: /data/owncloud-files
 ---
 apiVersion: v1
@@ -37,7 +36,6 @@ spec:
     - ReadWriteOnce
   storageClassName: local-storage
   hostPath:
-    # host path for MariaDB data
     path: /data/owncloud-mysql
 ---
 apiVersion: v1
@@ -52,3 +50,29 @@ spec:
   resources:
     requests:
       storage: 20Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: owncloud-redis-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  hostPath:
+    path: /data/owncloud-redis
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: owncloud-redis
+  namespace: home
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  resources:
+    requests:
+      storage: 5Gi

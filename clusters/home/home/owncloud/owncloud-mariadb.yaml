@@ -2,17 +2,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: owncloud-mariadb
+  name: mariadb
   namespace: home
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: owncloud-mariadb
+      app: mariadb
   template:
     metadata:
       labels:
-        app: owncloud-mariadb
+        app: mariadb
     spec:
       containers:
         - name: mariadb
@@ -34,17 +34,22 @@ spec:
               value: owncloud
             - name: MARIADB_AUTO_UPGRADE
               value: "1"
-          # DB settings recommended for ownCloud
-          args:
-            - "--max-allowed-packet=128M"
-            - "--innodb-log-file-size=64M"
-            - "--transaction-isolation=READ-COMMITTED"
-            - "--binlog-format=ROW"
-          ports:
-            - containerPort: 3306
+          command: ["--max-allowed-packet=128M", "--innodb-log-file-size=64M"]
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
+          ports:
+            - containerPort: 3306
+          readinessProbe:
+            exec:
+              command: ["mysqladmin", "ping", "-u", "root", "--password=owncloud"]
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command: ["mysqladmin", "ping", "-u", "root", "--password=owncloud"]
+            initialDelaySeconds: 30
+            periodSeconds: 10
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
@@ -53,13 +58,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: owncloud-mariadb
+  name: mariadb
   namespace: home
 spec:
-  type: ClusterIP
-  selector:
-    app: owncloud-mariadb
   ports:
-    - name: mysql
-      port: 3306
-      targetPort: 3306
+    - port: 3306
+  selector:
+    app: mariadb
