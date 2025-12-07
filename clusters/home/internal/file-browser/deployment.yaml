@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: file-browser
+  namespace: home
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: file-browser
+  template:
+    metadata:
+      labels:
+        app: file-browser
+    spec:
+      containers:
+        - name: file-browser
+          image: hurlenko/filebrowser:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: FB_BASEURL
+              value: "/"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: file-browser-data
