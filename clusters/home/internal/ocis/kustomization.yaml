@@ -5,6 +5,6 @@ namespace: home
 
 resources:
   - ocis-storage.yaml
-  - ocis-init-job.yaml
-#  - ocis-deployment.yaml
-#  - ingress.yaml
+#  - ocis-init-job.yaml
+  - ocis-deployment.yaml
+  - ingress.yaml
