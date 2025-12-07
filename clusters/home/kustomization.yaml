@@ -14,4 +14,4 @@ resources:
   - internal/portainer
   - internal/router
   - internal/grafana
-#  - internal/ocis
+  - internal/ocis
