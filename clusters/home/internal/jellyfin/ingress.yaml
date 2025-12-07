@@ -11,5 +11,5 @@ spec:
       kind: Rule
       services:
         - name: jellyfin
-          port: 9200
+          port: 8096
           scheme: http
