@@ -10,5 +10,5 @@ spec:
     - match: Host(`ocis.internal`)
       kind: Rule
       services:
-        - name: router-external
+        - name: ocis
           port: 80

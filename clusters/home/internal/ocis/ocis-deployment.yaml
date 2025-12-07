@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ocis
+  namespace: home
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ocis
+  template:
+    metadata:
+      labels:
+        app: ocis
+    spec:
+      containers:
+        - name: ocis
+          image: owncloud/ocis:latest
+          args: ["server"]
+          env:
+            - name: OCIS_INSECURE
+              value: "true"
+            - name: PROXY_HTTP_ADDR
+              value: "0.0.0.0:9200"
+            - name: OCIS_URL
+              value: "https://ocis.internal"
+          ports:
+            - name: http
+              containerPort: 9200
+          volumeMounts:
+            - name: config
+              mountPath: /etc/ocis
+            - name: data
+              mountPath: /var/lib/ocis
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: ocis-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: ocis-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ocis
+spec:
+  selector:
+    app: ocis
+  ports:
+    - port: 80
+      targetPort: 9200
