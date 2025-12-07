@@ -14,5 +14,5 @@ resources:
   - internal/portainer
   - internal/router
   - internal/grafana
-  - internal/nextcloud
+  - internal/jellyfin
 #  - internal/ocis
