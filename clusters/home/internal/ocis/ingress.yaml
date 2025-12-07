@@ -5,10 +5,12 @@ metadata:
   namespace: home
 spec:
   entryPoints:
-    - private
+    - websecure
   routes:
-    - match: Host(`ocis.internal`)
+    - match: Host(`ocis.pavel-usanli.online`)
       kind: Rule
       services:
         - name: ocis
           port: 80
+  tls:
+    certResolver: cloudflare
