@@ -4,4 +4,6 @@ kind: Kustomization
 namespace: home
 
 resources:
+#  - ingress.yaml
   - ocis-storage.yaml
+  - ocis-init-job.yaml
