@@ -7,4 +7,4 @@ resources:
   - jellyfin-storage.yaml
   - jellyfin-deployment.yaml
   - jellyfin-service.yaml
-#  - ingress.yaml
+  - jellyfin-ingress.yaml
