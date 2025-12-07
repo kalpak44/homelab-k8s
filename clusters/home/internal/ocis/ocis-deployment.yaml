@@ -50,5 +50,5 @@ spec:
   selector:
     app: ocis
   ports:
-    - port: 80
+    - port: 443
       targetPort: 9200
