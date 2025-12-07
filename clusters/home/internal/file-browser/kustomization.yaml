@@ -7,4 +7,5 @@ resources:
   - storage.yaml
   - deployment.yaml
   - service.yaml
-  - ingress.yaml
+  - ingress-internal.yaml
+  - ingress-public.yaml

@@ -1,18 +1,15 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: files-public
+  name: nginx
   namespace: home
 spec:
   entryPoints:
-    - websecure
+    - private
   routes:
-    - match: Host(`files.pavel-usanli.online`)
+    - match: Host(`home.internal`)
       kind: Rule
       priority: 10
       services:
         - name: nginx
           port: 80
-
-  tls:
-    certResolver: cloudflare
