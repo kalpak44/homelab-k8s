@@ -20,6 +20,8 @@ spec:
           env:
             - name: OCIS_INSECURE
               value: "true"
+            - name: PROXY_TLS
+              value: "false"
             - name: PROXY_HTTP_ADDR
               value: "0.0.0.0:9200"
             - name: OCIS_URL
