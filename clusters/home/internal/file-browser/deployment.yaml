@@ -28,8 +28,7 @@ spec:
               mountPath: /data
 
             - name: db
-              mountPath: /config/filebrowser.db
-              subPath: filebrowser.db
+              mountPath: /config
 
       volumes:
         - name: data
