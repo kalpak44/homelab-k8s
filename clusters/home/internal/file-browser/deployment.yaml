@@ -18,13 +18,24 @@ spec:
           image: hurlenko/filebrowser:latest
           ports:
             - containerPort: 8080
+
           env:
-            - name: FB_BASEURL
+            - name: FB_BASE_URL
               value: "/"
+
           volumeMounts:
             - name: data
               mountPath: /data
+
+            - name: db
+              mountPath: /config/filebrowser.db
+              subPath: filebrowser.db
+
       volumes:
         - name: data
           persistentVolumeClaim:
             claimName: file-browser-data
+
+        - name: db
+          persistentVolumeClaim:
+            claimName: file-browser-db
