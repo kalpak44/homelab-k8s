@@ -5,8 +5,10 @@ resources:
   - infra/flux-system
   - infra/traefik
   # Public services
+  - public/namespace.yaml
   - public/test
    # Internal services
+  - internal/namespace.yaml
   - internal/landing-page
   - internal/adguard
   - internal/portainer
