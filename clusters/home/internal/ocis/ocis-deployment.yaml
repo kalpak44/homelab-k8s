@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: ocis
-          image: owncloud/ocis:latest
+          image: owncloud/ocis:7.3.1
           args: ["server"]
           env:
             - name: OCIS_INSECURE
@@ -25,7 +25,7 @@ spec:
             - name: PROXY_HTTP_ADDR
               value: "0.0.0.0:9200"
             - name: OCIS_URL
-              value: "http://ocis.internal"
+              value: "https://ocis.internal"
           ports:
             - name: http
               containerPort: 9200
