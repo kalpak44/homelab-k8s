@@ -1,47 +1,31 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: kube-owncloud-storage-data
+  name: kube-ocis-storage-data
   namespace: home
   labels:
     type: local
 spec:
   capacity:
     storage: 512Gi
-  storageClassName: owncloud-storage-data
+  storageClassName: kube-ocis-storage-data
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /data/owncloud/data
+    path: /data/ocis/ocis-data
 ---
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: kube-owncloud-storage-mariadb
+  name: kube-ocis-storage-config
   namespace: home
   labels:
     type: local
 spec:
   capacity:
     storage: 8Gi
-  storageClassName: owncloud-storage-mariadb
+  storageClassName: ocis-config
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /data/owncloud/mariadb
----
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: kube-owncloud-storage-apache
-  namespace: home
-  labels:
-    type: local
-spec:
-  capacity:
-    storage: 1Gi
-  storageClassName: owncloud-storage-apache
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: /data/owncloud/apache
+    path: /data/ocis/ocis-config
