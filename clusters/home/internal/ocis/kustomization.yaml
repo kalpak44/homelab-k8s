@@ -4,4 +4,4 @@ kind: Kustomization
 namespace: home
 
 resources:
-  - owncloud-storage.yaml
+  - ocis-storage.yaml
