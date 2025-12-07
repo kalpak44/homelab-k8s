@@ -21,11 +21,11 @@ spec:
             - name: OCIS_INSECURE
               value: "true"
             - name: PROXY_TLS
-              value: "false"
+              value: "true"
             - name: PROXY_HTTP_ADDR
               value: "0.0.0.0:9200"
-#            - name: OCIS_URL
-#              value: "http://ocis.internal"
+            - name: OCIS_URL
+              value: "https://ocis.internal"
           ports:
             - name: http
               containerPort: 9200
