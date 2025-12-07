@@ -11,6 +11,5 @@ spec:
       kind: Rule
       services:
         - name: ocis
-          scheme: https
-          port: 443
-          serversTransport: insecure-transport
+          port: 9200
+          scheme: http
