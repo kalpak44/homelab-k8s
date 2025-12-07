@@ -8,4 +8,3 @@ resources:
 #  - ocis-init-job.yaml
   - ocis-deployment.yaml
   - ingress.yaml
-  - middleware.yaml
