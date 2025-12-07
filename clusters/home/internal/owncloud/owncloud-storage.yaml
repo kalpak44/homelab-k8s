@@ -1,0 +1,47 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: kube-owncloud-storage-data
+  namespace: home
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 512Gi
+  storageClassName: owncloud-storage-data
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data/owncloud/data
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: kube-owncloud-storage-mariadb
+  namespace: home
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 8Gi
+  storageClassName: owncloud-storage-mariadb
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data/owncloud/mariadb
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: kube-owncloud-storage-apache
+  namespace: home
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 1Gi
+  storageClassName: owncloud-storage-apache
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data/owncloud/apache
