@@ -33,12 +33,20 @@ spec:
     # ENTRYPOINT's INCLUDING PRIVATE HTTPS
     ####################################################################
     ports:
+#      private:
+#        port: 8888
+#        expose:
+#          default: false
+#          internal: true
+#        exposedPort: 80
       private:
-        port: 8888
+        port: 9443
         expose:
           default: false
           internal: true
-        exposedPort: 80
+        exposedPort: 443
+        tls:
+          enabled: true
 
       web:
         port: 8000
@@ -96,6 +104,15 @@ spec:
         spec:
           basicAuth:
             secret: dashboard-auth-secret
+
+      - apiVersion: traefik.io/v1alpha1
+        kind: TLSStore
+        metadata:
+          name: default
+          namespace: traefik
+        spec:
+          defaultCertificate:
+            secretName: internal-tls
 
     ####################################################################
     # ACME (CLOUDFLARE DNS01)
