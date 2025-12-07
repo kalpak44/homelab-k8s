@@ -13,3 +13,4 @@ spec:
         - name: ocis
           scheme: https
           port: 443
+          serversTransport: insecure-transport
