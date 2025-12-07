@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: file-browser-storage-data
+  namespace: home
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 512Gi
+  accessModes: [ReadWriteOnce]
+  storageClassName: file-browser-storage-data
+  hostPath:
+    path: /data/file-browser/data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: home
+  name: file-browser-data
+spec:
+  storageClassName: file-browser-storage-data
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 512Gi
