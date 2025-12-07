@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: jellyfin
+  namespace: home
 spec:
   replicas: 1
   selector:
@@ -18,11 +19,19 @@ spec:
           ports:
             - containerPort: 8096
           volumeMounts:
-            - name: jellyfin-storage
+            - name: config
               mountPath: /config
-            - name: jellyfin-storage
+            - name: cache
+              mountPath: /cache
+            - name: media
               mountPath: /media
       volumes:
-        - name: jellyfin-storage
+        - name: config
           persistentVolumeClaim:
-            claimName: jellyfin
+            claimName: jellyfin-config
+        - name: cache
+          persistentVolumeClaim:
+            claimName: jellyfin-cache
+        - name: media
+          persistentVolumeClaim:
+            claimName: jellyfin-media
