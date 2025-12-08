@@ -9,3 +9,4 @@ resources:
   - service.yaml
   - pv.yaml
   - pvc.yaml
+  - pod.yaml
