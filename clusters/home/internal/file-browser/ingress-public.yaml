@@ -2,7 +2,7 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: file-browser-public
-  namespace: home
+  namespace: internal
 spec:
   entryPoints:
     - websecure

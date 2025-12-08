@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Endpoints
 metadata:
   name: router-external
-  namespace: home
+  namespace: internal
 subsets:
   - addresses:
       - ip: 192.168.1.1
