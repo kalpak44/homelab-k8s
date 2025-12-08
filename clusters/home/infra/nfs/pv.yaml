@@ -7,7 +7,6 @@ spec:
     storage: 500Gi
   accessModes:
     - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
   nfs:
     server: nfs-server.shared.svc.cluster.local
     path: "/exports"
