@@ -4,6 +4,7 @@ metadata:
   name: shared-nfs-pvc
   namespace: shared
 spec:
+  storageClassName: ""
   accessModes:
     - ReadWriteMany
   resources:
