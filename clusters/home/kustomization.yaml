@@ -4,7 +4,7 @@ resources:
   # Infrastructure
   - infra/flux-system
   - infra/traefik
-#  - infra/nfs
+  - infra/nfs
   # Public services
   - public/namespace.yaml
   - public/test
