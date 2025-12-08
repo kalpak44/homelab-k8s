@@ -4,6 +4,7 @@ resources:
   # Infrastructure
   - infra/flux-system
   - infra/traefik
+  - infra/nfs
   # Public services
   - public/namespace.yaml
   - public/test
@@ -14,5 +15,5 @@ resources:
   - internal/portainer
   - internal/router
   - internal/grafana
-  - internal/file-browser
+#  - internal/file-browser
 #  - internal/ocis
