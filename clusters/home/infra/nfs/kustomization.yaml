@@ -5,7 +5,7 @@ namespace: shared
 
 resources:
   - namespace.yaml
+  - statefulset.yaml
+  - service.yaml
   - pv.yaml
   - pvc.yaml
-  - service.yaml
-  - statefulset.yaml
