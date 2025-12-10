@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: busybox-nfs-test
+  name: busybox-nfs
   namespace: internal
 spec:
   containers:
