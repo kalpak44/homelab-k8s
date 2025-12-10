@@ -7,7 +7,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`test.pavel-usanli.online`)
+    - match: Host(`spy.pavel-usanli.online`)
       kind: Rule
       priority: 10
       services:

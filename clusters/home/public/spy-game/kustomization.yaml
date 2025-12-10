@@ -7,3 +7,11 @@ resources:
   - deployment.yaml
   - service.yaml
   - ingress.yaml
+
+configMapGenerator:
+  - name: nginx-html
+    files:
+      - html/index.html
+
+generatorOptions:
+  disableNameSuffixHash: true
