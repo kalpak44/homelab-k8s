@@ -4,10 +4,4 @@ kind: Kustomization
 namespace: shared
 
 resources:
-  - namespace.yaml
-  - nfs-server-statefulset.yaml
-  - nfs-server-service.yaml
-  - pvc-for-nfs.yaml
-  - pv-client.yaml
-  - pvc-client.yaml
-  - test-pod.yaml
+  - nfs-pv.yaml

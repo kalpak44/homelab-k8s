@@ -25,6 +25,10 @@ kubectl create secret generic cloudflare-credentials \
   -n traefik
 ```
 
+3) Network File System:
+   https://kubernetes.io/docs/concepts/storage/storage-classes/
+NFS Server ->TBD: https://documentation.ubuntu.com/server/how-to/networking/install-nfs/
+
 Notes
 - The token should have at least Zone:DNS:Edit on the domain(s) you plan to issue certificates for.
 - In this repo, the Traefik HelmRelease (clusters/home/infra/traefik/traefik-release.yaml) maps the Secret key apiKey to the env var CF_DNS_API_TOKEN used by lego/Traefik.
