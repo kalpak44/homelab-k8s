@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: bunker
-          image: kalpak44/bunker-party:059faa6fe5d21b06751df2480373226324ec0a2a
+          image: kalpak44/bunker-party:87bd9bea362676b92d7890ab029de701aa918338
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
