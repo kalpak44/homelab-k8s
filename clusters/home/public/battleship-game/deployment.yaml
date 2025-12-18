@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: battleship
-          image: kalpak44/battleship-party:03e1ee40b8648e4b0cb596bbef01d4fed76c110b
+          image: kalpak44/battleship-party:dbbeb0abd5cd2acdaf05c685a5164398e730fe41
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
