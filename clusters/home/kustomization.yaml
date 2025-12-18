@@ -9,6 +9,7 @@ resources:
   - public/namespace.yaml
   - public/spy-game
   - public/bunker-game
+  - public/battleship-game
    # Internal services
   - internal/namespace.yaml
   - internal/nfs-pvc.yaml
