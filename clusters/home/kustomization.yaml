@@ -13,11 +13,12 @@ resources:
    # Internal services
   - internal/namespace.yaml
   - internal/nfs-pvc.yaml
-  - internal/busybox-nfs-test.yaml
+#  - internal/busybox-nfs-test.yaml
   - internal/landing-page
   - internal/adguard
   - internal/portainer
   - internal/router
   - internal/grafana
+  - internal/pgadmin
 #  - internal/file-browser
 #  - internal/ocis
