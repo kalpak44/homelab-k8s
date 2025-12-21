@@ -8,17 +8,28 @@ metadata:
 data:
   trivy-security.json: |
     {
-      "title": "Security – Trivy (Test)",
+      "title": "Security – Trivy",
       "schemaVersion": 36,
-      "version": 1,
+      "version": 2,
       "panels": [
         {
           "type": "stat",
-          "title": "Prometheus is reachable",
+          "title": "Critical Vulnerabilities",
           "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
           "targets": [
             {
-              "expr": "up",
+              "expr": "sum(trivy_image_vulnerabilities{severity=\"CRITICAL\"})",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "High Vulnerabilities",
+          "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+          "targets": [
+            {
+              "expr": "sum(trivy_image_vulnerabilities{severity=\"HIGH\"})",
               "refId": "A"
             }
           ]
