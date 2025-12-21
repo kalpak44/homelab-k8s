@@ -20,14 +20,14 @@ data:
               - node-exporter.internal.svc:9100
 
       ####################################################################
-      # KUBERNETES SERVICES (FOR TRIVY, FUTURE EXPORTERS)
+      # TRIVY OPERATOR (HEADLESS SERVICE → ENDPOINTS)
       ####################################################################
-      - job_name: "kubernetes-services"
+      - job_name: "trivy-operator"
         kubernetes_sd_configs:
-          - role: service
+          - role: endpoints
 
         relabel_configs:
-          # keep only trivy-operator service
+          # keep only trivy-operator endpoints
           - source_labels: [__meta_kubernetes_namespace]
             action: keep
             regex: trivy-system
@@ -36,7 +36,6 @@ data:
             action: keep
             regex: trivy-operator
 
-          # use service port named "metrics" or default
-          - source_labels: [__meta_kubernetes_service_port_name]
+          - source_labels: [__meta_kubernetes_endpoint_port_name]
             action: keep
-            regex: metrics|http|https
+            regex: metrics
