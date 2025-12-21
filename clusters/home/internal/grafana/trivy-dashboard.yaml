@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trivy-security-dashboard
+  namespace: internal
+  labels:
+    grafana_dashboard: "1"
+data:
+  trivy-security.json: |
+    {
+      "title": "Security – Trivy (Test)",
+      "schemaVersion": 36,
+      "version": 1,
+      "panels": [
+        {
+          "type": "stat",
+          "title": "Prometheus is reachable",
+          "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+          "targets": [
+            {
+              "expr": "up",
+              "refId": "A"
+            }
+          ]
+        }
+      ]
+    }

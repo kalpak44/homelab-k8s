@@ -13,3 +13,4 @@ resources:
   - prometheus-deployment.yaml
   - prometheus-service.yaml
   - grafana-datasource-prometheus.yaml
+  - trivy-dashboard.yaml
