@@ -9,3 +9,6 @@ resources:
   - node-exporter-service.yaml
   - grafana-helmrepo.yaml
   - grafana-release.yaml
+  - prometheus-config.yaml
+  - prometheus-deployment.yaml
+  - prometheus-service.yaml
