@@ -5,6 +5,7 @@ resources:
   - infra/flux-system
   - infra/traefik
   - infra/nfs
+  - infra/trivy-operator
   # Public services
   - public/namespace.yaml
   - public/spy-game
