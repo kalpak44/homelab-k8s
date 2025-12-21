@@ -39,3 +39,11 @@ data:
           - source_labels: [__meta_kubernetes_endpoint_port_name]
             action: keep
             regex: metrics
+
+          ##################################################################
+          # FORCE SCRAPE PORT TO 8080 (TRIVY METRICS PORT)
+          ##################################################################
+          - source_labels: [__address__]
+            target_label: __address__
+            regex: (.+):\d+
+            replacement: $1:8080
