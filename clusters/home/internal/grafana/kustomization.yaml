@@ -6,5 +6,6 @@ namespace: internal
 resources:
   - ingress.yaml
   - node-exporter-daemonset.yaml
+  - node-exporter-service.yaml
   - grafana-helmrepo.yaml
   - grafana-release.yaml
