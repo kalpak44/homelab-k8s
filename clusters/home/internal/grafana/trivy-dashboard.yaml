@@ -8,31 +8,107 @@ metadata:
 data:
   trivy-security.json: |
     {
-      "title": "Security – Trivy",
+      "title": "Kubernetes Security – Trivy",
       "schemaVersion": 36,
-      "version": 2,
+      "version": 3,
+      "refresh": "30s",
       "panels": [
+
         {
           "type": "stat",
-          "title": "Critical Vulnerabilities",
+          "title": "Critical CVEs",
           "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
           "targets": [
-            {
-              "expr": "sum(trivy_image_vulnerabilities{severity=\"CRITICAL\"})",
-              "refId": "A"
-            }
+            { "expr": "sum(trivy_image_vulnerabilities{severity=\"CRITICAL\"})" }
           ]
         },
         {
           "type": "stat",
-          "title": "High Vulnerabilities",
+          "title": "High CVEs",
           "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
           "targets": [
+            { "expr": "sum(trivy_image_vulnerabilities{severity=\"HIGH\"})" }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Medium CVEs",
+          "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
+          "targets": [
+            { "expr": "sum(trivy_image_vulnerabilities{severity=\"MEDIUM\"})" }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Low CVEs",
+          "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
+          "targets": [
+            { "expr": "sum(trivy_image_vulnerabilities{severity=\"LOW\"})" }
+          ]
+        },
+
+        {
+          "type": "table",
+          "title": "CVEs by Namespace",
+          "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
+          "targets": [
             {
-              "expr": "sum(trivy_image_vulnerabilities{severity=\"HIGH\"})",
-              "refId": "A"
+              "expr": "sum by (namespace, severity) (trivy_image_vulnerabilities)",
+              "format": "table"
+            }
+          ],
+          "transformations": [
+            { "id": "groupBy", "options": { "fields": { "namespace": { "operation": "groupby" } } } }
+          ]
+        },
+
+        {
+          "type": "table",
+          "title": "CVEs by Workload",
+          "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum by (workload, severity) (trivy_image_vulnerabilities)",
+              "format": "table"
+            }
+          ]
+        },
+
+        {
+          "type": "table",
+          "title": "CVEs by Pod",
+          "gridPos": { "x": 0, "y": 12, "w": 24, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum by (pod, namespace, severity) (trivy_image_vulnerabilities)",
+              "format": "table"
+            }
+          ]
+        },
+
+        {
+          "type": "table",
+          "title": "CVEs by Container Image",
+          "gridPos": { "x": 0, "y": 20, "w": 24, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum by (image, severity) (trivy_image_vulnerabilities)",
+              "format": "table"
+            }
+          ]
+        },
+
+        {
+          "type": "table",
+          "title": "CVEs by CVE ID",
+          "gridPos": { "x": 0, "y": 28, "w": 24, "h": 10 },
+          "targets": [
+            {
+              "expr": "sum by (cve_id, severity) (trivy_image_vulnerabilities)",
+              "format": "table"
             }
           ]
         }
+
       ]
     }
