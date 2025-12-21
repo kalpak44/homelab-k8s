@@ -43,3 +43,17 @@ spec:
     ####################################################################
     ingress:
       enabled: false
+
+    ####################################################################
+    # DATASOURCES (PROVISIONED, GITOPS-SAFE)
+    ####################################################################
+    datasources:
+      datasources.yaml:
+        apiVersion: 1
+        datasources:
+          - name: Prometheus
+            type: prometheus
+            access: proxy
+            url: http://prometheus.internal.svc:9090
+            isDefault: true
+            editable: false
