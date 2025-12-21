@@ -57,3 +57,13 @@ spec:
             url: http://prometheus.internal.svc:9090
             isDefault: true
             editable: false
+
+    ####################################################################
+    # DASHBOARD SIDECAR (LOAD DASHBOARDS FROM CONFIGMAPS)
+    ####################################################################
+    sidecar:
+      dashboards:
+        enabled: true
+        label: grafana_dashboard
+        labelValue: "1"
+        searchNamespace: ALL
