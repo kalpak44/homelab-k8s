@@ -5,30 +5,49 @@ metadata:
   namespace: internal
 spec:
   schedule: "*/30 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
       template:
         spec:
           serviceAccountName: trivy-report-exporter
           restartPolicy: OnFailure
+
           volumes:
+            - name: work
+              emptyDir: {}
             - name: reports
               persistentVolumeClaim:
                 claimName: trivy-reports
+
           containers:
-            - name: exporter
-              image: ghcr.io/aquasecurity/trivy:0.50.1
-              volumeMounts:
-                - name: reports
-                  mountPath: /reports
+            - name: kubectl-exporter
+              image: bitnami/kubectl:1.30
               command:
                 - /bin/sh
                 - -c
                 - |
                   set -e
-                  kubectl get vulnerabilityreports -A -o json > /tmp/reports.json
+                  kubectl get vulnerabilityreports -A -o json > /work/reports.json
+              volumeMounts:
+                - name: work
+                  mountPath: /work
+
+            - name: trivy-converter
+              image: aquasec/trivy:0.50.1
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -e
                   trivy convert \
                     --format template \
                     --template "@/contrib/html.tpl" \
-                    /tmp/reports.json \
+                    /work/reports.json \
                     > /reports/index.html
+              volumeMounts:
+                - name: work
+                  mountPath: /work
+                - name: reports
+                  mountPath: /reports
