@@ -10,7 +10,7 @@ data:
     {
       "title": "Kubernetes Security – Trivy",
       "schemaVersion": 36,
-      "version": 3,
+      "version": 5,
       "refresh": "30s",
       "panels": [
 
@@ -19,7 +19,10 @@ data:
           "title": "Critical CVEs",
           "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
           "targets": [
-            { "expr": "sum(trivy_image_vulnerabilities{severity=\"CRITICAL\"})" }
+            {
+              "expr": "sum(trivy_image_vulnerabilities{severity=\"Critical\"})",
+              "instant": true
+            }
           ]
         },
         {
@@ -27,7 +30,10 @@ data:
           "title": "High CVEs",
           "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
           "targets": [
-            { "expr": "sum(trivy_image_vulnerabilities{severity=\"HIGH\"})" }
+            {
+              "expr": "sum(trivy_image_vulnerabilities{severity=\"High\"})",
+              "instant": true
+            }
           ]
         },
         {
@@ -35,7 +41,10 @@ data:
           "title": "Medium CVEs",
           "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
           "targets": [
-            { "expr": "sum(trivy_image_vulnerabilities{severity=\"MEDIUM\"})" }
+            {
+              "expr": "sum(trivy_image_vulnerabilities{severity=\"Medium\"})",
+              "instant": true
+            }
           ]
         },
         {
@@ -43,7 +52,10 @@ data:
           "title": "Low CVEs",
           "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
           "targets": [
-            { "expr": "sum(trivy_image_vulnerabilities{severity=\"LOW\"})" }
+            {
+              "expr": "sum(trivy_image_vulnerabilities{severity=\"Low\"})",
+              "instant": true
+            }
           ]
         },
 
@@ -58,42 +70,100 @@ data:
             }
           ],
           "transformations": [
-            { "id": "groupBy", "options": { "fields": { "namespace": { "operation": "groupby" } } } }
+            { "id": "labelsToFields" },
+            {
+              "id": "organize",
+              "options": {
+                "renameByName": {
+                  "namespace": "Namespace",
+                  "severity": "Severity",
+                  "Value": "CVEs"
+                },
+                "order": ["Namespace", "Severity", "CVEs"]
+              }
+            }
           ]
         },
 
         {
           "type": "table",
-          "title": "CVEs by Workload",
+          "title": "CVEs by Kubernetes Resource",
           "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
           "targets": [
             {
-              "expr": "sum by (workload, severity) (trivy_image_vulnerabilities)",
+              "expr": "sum by (namespace, resource_kind, resource_name, severity) (trivy_image_vulnerabilities)",
               "format": "table"
+            }
+          ],
+          "transformations": [
+            { "id": "labelsToFields" },
+            {
+              "id": "organize",
+              "options": {
+                "renameByName": {
+                  "namespace": "Namespace",
+                  "resource_kind": "Kind",
+                  "resource_name": "Resource",
+                  "severity": "Severity",
+                  "Value": "CVEs"
+                },
+                "order": ["Namespace", "Kind", "Resource", "Severity", "CVEs"]
+              }
             }
           ]
         },
 
         {
           "type": "table",
-          "title": "CVEs by Pod",
-          "gridPos": { "x": 0, "y": 12, "w": 24, "h": 8 },
+          "title": "CVEs by Container",
+          "gridPos": { "x": 0, "y": 12, "w": 24, "h": 10 },
           "targets": [
             {
-              "expr": "sum by (pod, namespace, severity) (trivy_image_vulnerabilities)",
+              "expr": "sum by (namespace, resource_name, container_name, severity) (trivy_image_vulnerabilities)",
               "format": "table"
+            }
+          ],
+          "transformations": [
+            { "id": "labelsToFields" },
+            {
+              "id": "organize",
+              "options": {
+                "renameByName": {
+                  "namespace": "Namespace",
+                  "resource_name": "Resource",
+                  "container_name": "Container",
+                  "severity": "Severity",
+                  "Value": "CVEs"
+                },
+                "order": ["Namespace", "Resource", "Container", "Severity", "CVEs"]
+              }
             }
           ]
         },
 
         {
           "type": "table",
-          "title": "CVEs by Container Image",
-          "gridPos": { "x": 0, "y": 20, "w": 24, "h": 8 },
+          "title": "CVEs by Image",
+          "gridPos": { "x": 0, "y": 22, "w": 24, "h": 8 },
           "targets": [
             {
-              "expr": "sum by (image, severity) (trivy_image_vulnerabilities)",
+              "expr": "sum by (image_repository, image_tag, severity) (trivy_image_vulnerabilities)",
               "format": "table"
+            }
+          ],
+          "transformations": [
+            { "id": "labelsToFields" },
+            {
+              "id": "organize",
+              "options": {
+                "renameByName": {
+                  "image_repository": "Image",
+                  "image_tag": "Tag",
+                  "severity": "Severity",
+                  "Value": "CVEs"
+                },
+                "order": ["Image", "Tag", "Severity", "CVEs"]
+              }
             }
           ]
         },
@@ -101,11 +171,25 @@ data:
         {
           "type": "table",
           "title": "CVEs by CVE ID",
-          "gridPos": { "x": 0, "y": 28, "w": 24, "h": 10 },
+          "gridPos": { "x": 0, "y": 30, "w": 24, "h": 10 },
           "targets": [
             {
               "expr": "sum by (cve_id, severity) (trivy_image_vulnerabilities)",
               "format": "table"
+            }
+          ],
+          "transformations": [
+            { "id": "labelsToFields" },
+            {
+              "id": "organize",
+              "options": {
+                "renameByName": {
+                  "cve_id": "CVE",
+                  "severity": "Severity",
+                  "Value": "Occurrences"
+                },
+                "order": ["CVE", "Severity", "Occurrences"]
+              }
             }
           ]
         }
