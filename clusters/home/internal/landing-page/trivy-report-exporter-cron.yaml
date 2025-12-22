@@ -9,14 +9,13 @@ spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
+      backoffLimit: 3
       template:
         spec:
           serviceAccountName: trivy-report-exporter
           restartPolicy: OnFailure
 
           volumes:
-            - name: work
-              emptyDir: {}
             - name: reports
               persistentVolumeClaim:
                 claimName: trivy-reports
@@ -29,20 +28,8 @@ spec:
                 - -c
                 - |
                   set -e
-                  kubectl get vulnerabilityreports -A -o json > /work/reports.json
+                  kubectl get vulnerabilityreports -A -o json \
+                    > /reports/vulnerabilityreports.json
               volumeMounts:
-                - name: work
-                  mountPath: /work
-
-            - name: trivy-converter
-              image: sandbox:latest
-              command:
-                - /bin/sh
-                - -c
-                - |
-                  sleep 99999
-              volumeMounts:
-                - name: work
-                  mountPath: /work
                 - name: reports
                   mountPath: /reports
