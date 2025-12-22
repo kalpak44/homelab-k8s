@@ -23,7 +23,7 @@ spec:
 
           containers:
             - name: kubectl-exporter
-              image: bitnami/kubectl:1.30
+              image: bitnami/kubectl:latest
               command:
                 - /bin/sh
                 - -c
