@@ -1,0 +1,200 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trivy-security-html
+  namespace: internal
+data:
+  index.html: |-
+    <!doctype html>
+    <html lang="en" class="dark">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Security Reports</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
+        <!-- Tailwind CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        animation: {
+                            spinSlow: 'spin 1.4s linear infinite',
+                            pulseSlow: 'pulse 2s ease-in-out infinite'
+                        }
+                    }
+                }
+            }
+        </script>
+        
+        <style>
+            .mono { font-variant-ligatures: none; }
+        </style>
+    </head>
+
+    <body class="bg-zinc-950 text-zinc-100 min-h-screen">
+
+    <!-- LOADER -->
+    <div id="loader"
+         class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950 transition-opacity duration-500">
+        <div class="text-center">
+            <div class="mx-auto h-14 w-14 rounded-full border-4 border-zinc-700 border-t-red-500 animate-spinSlow"></div>
+            <p id="loaderText"
+               class="mt-6 text-sm text-zinc-400 animate-pulseSlow">
+                Loading security report…
+            </p>
+            <p class="mt-2 text-xs text-zinc-600 mono">reports.json</p>
+        </div>
+    </div>
+
+    <!-- APP -->
+    <div class="max-w-7xl mx-auto px-6 py-10">
+        
+        <header class="flex items-end justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-semibold">Security Reports</h1>
+                <p id="subtitle" class="mt-1 text-sm text-zinc-400">—</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="location.reload()"
+                        class="rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm hover:bg-zinc-800">
+                    Refresh
+                </button>
+                <a href="./reports.json" target="_blank"
+                   class="rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm hover:bg-zinc-800">
+                    View JSON
+                </a>
+            </div>
+        </header>
+        
+        <!-- SUMMARY -->
+        <section class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
+            <div class="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
+                <div class="text-xs text-zinc-400">CRITICAL</div>
+                <div id="crit" class="text-2xl font-semibold">0</div>
+            </div>
+            <div class="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
+                <div class="text-xs text-zinc-400">HIGH</div>
+                <div id="high" class="text-2xl font-semibold">0</div>
+            </div>
+            <div class="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
+                <div class="text-xs text-zinc-400">MEDIUM</div>
+                <div id="medium" class="text-2xl font-semibold">0</div>
+            </div>
+            <div class="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
+                <div class="text-xs text-zinc-400">LOW</div>
+                <div id="low" class="text-2xl font-semibold">0</div>
+            </div>
+            <div class="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
+                <div class="text-xs text-zinc-400">UNKNOWN</div>
+                <div id="unknown" class="text-2xl font-semibold">0</div>
+            </div>
+            <div class="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
+                <div class="text-xs text-zinc-400">TOTAL</div>
+                <div id="total" class="text-2xl font-semibold">0</div>
+            </div>
+        </section>
+        
+        <!-- TABLE -->
+        <section class="mt-10">
+            <h2 class="text-lg font-semibold mb-3">Vulnerabilities</h2>
+            
+            <div class="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/40">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm">
+                        <thead class="bg-zinc-950/50 text-xs uppercase text-zinc-400">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Severity</th>
+                            <th class="px-4 py-3 text-left">CVE</th>
+                            <th class="px-4 py-3 text-left">Package</th>
+                            <th class="px-4 py-3 text-left">Installed</th>
+                            <th class="px-4 py-3 text-left">Fixed</th>
+                            <th class="px-4 py-3 text-left">Image</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbody" class="divide-y divide-zinc-800"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        const loader = document.getElementById('loader');
+        const loaderText = document.getElementById('loaderText');
+        
+        function hideLoader() {
+            loader.classList.add('opacity-0');
+            setTimeout(() => loader.remove(), 500);
+        }
+        
+        function badge(sev) {
+            const c = {
+                CRITICAL: 'border-red-900 bg-red-950 text-red-300',
+                HIGH: 'border-orange-900 bg-orange-950 text-orange-300',
+                MEDIUM: 'border-amber-900 bg-amber-950 text-amber-300',
+                LOW: 'border-lime-900 bg-lime-950 text-lime-300',
+                UNKNOWN: 'border-sky-900 bg-sky-950 text-sky-300'
+            };
+            return `<span class="rounded-full border px-2 py-0.5 text-xs ${c[sev] || c.UNKNOWN}">${sev}</span>`;
+        }
+        
+        async function load() {
+            try {
+                loaderText.textContent = 'Fetching reports.json…';
+                const res = await fetch('./reports.json', { cache: 'no-store' });
+                if (!res.ok) throw new Error('Failed to load reports.json');
+                
+                loaderText.textContent = 'Parsing report…';
+                const json = await res.json();
+                
+                loaderText.textContent = 'Rendering UI…';
+                
+                let counts = { CRITICAL:0, HIGH:0, MEDIUM:0, LOW:0, UNKNOWN:0 };
+                let rows = [];
+                
+                for (const item of json.items || []) {
+                    const image = `${item.report?.artifact?.repository}:${item.report?.artifact?.tag}`;
+                    for (const v of item.report?.vulnerabilities || []) {
+                        const sev = (v.severity || 'UNKNOWN').toUpperCase();
+                        counts[sev] = (counts[sev] || 0) + 1;
+                        
+                        rows.push(`
+                <tr class="hover:bg-zinc-950/40">
+                  <td class="px-4 py-3">${badge(sev)}</td>
+                  <td class="px-4 py-3 mono">${v.vulnerabilityID || '—'}</td>
+                  <td class="px-4 py-3">${v.resource || '—'}</td>
+                  <td class="px-4 py-3 mono">${v.installedVersion || '—'}</td>
+                  <td class="px-4 py-3 mono">${v.fixedVersion || '—'}</td>
+                  <td class="px-4 py-3 text-xs text-zinc-400">${image}</td>
+                </tr>
+              `);
+                    }
+                }
+                
+                document.getElementById('crit').textContent = counts.CRITICAL;
+                document.getElementById('high').textContent = counts.HIGH;
+                document.getElementById('medium').textContent = counts.MEDIUM;
+                document.getElementById('low').textContent = counts.LOW;
+                document.getElementById('unknown').textContent = counts.UNKNOWN;
+                document.getElementById('total').textContent =
+                    Object.values(counts).reduce((a,b)=>a+b,0);
+                
+                document.getElementById('tbody').innerHTML = rows.join('');
+                document.getElementById('subtitle').textContent =
+                    `Loaded ${rows.length} vulnerabilities`;
+                
+                hideLoader();
+            } catch (e) {
+                loaderText.textContent = 'Failed to load report';
+                console.error(e);
+            }
+        }
+        
+        load();
+    </script>
+
+    </body>
+    </html>

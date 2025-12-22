@@ -13,22 +13,51 @@ spec:
       labels:
         app: nginx
     spec:
+
+      #  INIT CONTAINER
+      initContainers:
+        - name: install-security-ui
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              mkdir -p /security
+              cp /src/index.html /security/index.html
+              echo "Security UI installed"
+          volumeMounts:
+            - name: trivy-reports
+              mountPath: /security
+            - name: security-html
+              mountPath: /src
+              readOnly: true
+
       containers:
         - name: nginx
           image: nginx:stable
           ports:
             - containerPort: 80
           volumeMounts:
+            # Home page
             - name: html
               mountPath: /usr/share/nginx/html/index.html
               subPath: index.html
               readOnly: true
+
+            # Security reports + UI
             - name: trivy-reports
               mountPath: /usr/share/nginx/html/security
+
       volumes:
         - name: html
           configMap:
             name: nginx-html
+
+        - name: security-html
+          configMap:
+            name: trivy-security-html
+
         - name: trivy-reports
           persistentVolumeClaim:
             claimName: trivy-reports

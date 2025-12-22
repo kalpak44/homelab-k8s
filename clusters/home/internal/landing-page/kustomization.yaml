@@ -11,3 +11,4 @@ resources:
   - trivy-report-exporter-cron.yaml
   - trivy-pvc-resports.yaml
   - trivy-report-rbac.yaml
+  - trivy-security-configmap.yaml
