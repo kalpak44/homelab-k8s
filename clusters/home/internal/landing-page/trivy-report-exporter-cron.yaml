@@ -39,7 +39,7 @@ spec:
                   kubectl delete jobs,pods \
                     -n internal \
                     -l app=trivy-report-exporter \
-                    --ignore-not-found
+                    --ignore-not-found || true
 
                   echo "Exporting vulnerability reports..."
                   kubectl get vulnerabilityreports -A -o json \
