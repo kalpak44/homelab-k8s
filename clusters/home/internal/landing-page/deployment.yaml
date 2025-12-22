@@ -23,10 +23,12 @@ spec:
               mountPath: /usr/share/nginx/html/index.html
               subPath: index.html
               readOnly: true
+            - name: trivy-reports
+              mountPath: /usr/share/nginx/html/security
       volumes:
         - name: html
           configMap:
             name: nginx-html
-            items:
-              - key: index.html
-                path: index.html
+        - name: trivy-reports
+          persistentVolumeClaim:
+            claimName: trivy-reports
