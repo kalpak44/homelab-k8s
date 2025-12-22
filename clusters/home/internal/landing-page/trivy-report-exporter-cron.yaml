@@ -5,18 +5,25 @@ metadata:
   namespace: internal
 spec:
   schedule: "*/30 * * * *"
+
+  # Prevent overlapping executions
+  concurrencyPolicy: Forbid
+
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
+
   jobTemplate:
     metadata:
       labels:
         app: trivy-report-exporter
+        cleanup: trivy-report-exporter
     spec:
       backoffLimit: 3
       template:
         metadata:
           labels:
             app: trivy-report-exporter
+            cleanup: trivy-report-exporter
         spec:
           serviceAccountName: trivy-report-exporter
           restartPolicy: OnFailure
@@ -27,23 +34,51 @@ spec:
                 claimName: trivy-reports
 
           containers:
-            - name: kubectl-exporter
+            - name: exporter
               image: bitnami/kubectl:latest
+              imagePullPolicy: IfNotPresent
               command:
                 - /bin/sh
                 - -c
                 - |
                   set -e
 
-                  echo "Cleaning up old jobs and pods..."
+                  POD_NAME="$(hostname)"
+                  NAMESPACE="internal"
+
+                  echo "[$(date -Iseconds)] Protecting current pod from cleanup"
+                  kubectl label pod "${POD_NAME}" \
+                    -n "${NAMESPACE}" \
+                    cleanup- \
+                    --overwrite || true
+
+                  echo "[$(date -Iseconds)] Cleaning up old jobs and pods"
                   kubectl delete jobs,pods \
-                    -n internal \
-                    -l app=trivy-report-exporter \
+                    -n "${NAMESPACE}" \
+                    -l cleanup=trivy-report-exporter \
                     --ignore-not-found || true
 
-                  echo "Exporting vulnerability reports..."
+                  echo "[$(date -Iseconds)] Waiting for cleanup to complete"
+                  for i in $(seq 1 30); do
+                    remaining=$(kubectl get jobs,pods \
+                      -n "${NAMESPACE}" \
+                      -l cleanup=trivy-report-exporter \
+                      --no-headers 2>/dev/null | wc -l || true)
+
+                    if [ "$remaining" -eq 0 ]; then
+                      echo "[$(date -Iseconds)] Cleanup completed"
+                      break
+                    fi
+
+                    sleep 2
+                  done
+
+                  echo "[$(date -Iseconds)] Exporting vulnerability reports"
                   kubectl get vulnerabilityreports -A -o json \
                     > /reports/reports.json
+
+                  echo "[$(date -Iseconds)] Report export completed successfully"
+
               volumeMounts:
                 - name: reports
                   mountPath: /reports
