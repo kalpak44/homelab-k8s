@@ -29,7 +29,8 @@ spec:
                 - |
                   set -e
                   kubectl get vulnerabilityreports -A -o json \
-                    > /reports/vulnerabilityreports.json
+                    > /reports/reports.json
+                  sleep 30000
               volumeMounts:
                 - name: reports
                   mountPath: /reports
