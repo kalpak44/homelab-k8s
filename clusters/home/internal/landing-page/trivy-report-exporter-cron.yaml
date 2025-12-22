@@ -8,9 +8,15 @@ spec:
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
+    metadata:
+      labels:
+        app: trivy-report-exporter
     spec:
       backoffLimit: 3
       template:
+        metadata:
+          labels:
+            app: trivy-report-exporter
         spec:
           serviceAccountName: trivy-report-exporter
           restartPolicy: OnFailure
@@ -28,9 +34,16 @@ spec:
                 - -c
                 - |
                   set -e
+
+                  echo "Cleaning up old jobs and pods..."
+                  kubectl delete jobs,pods \
+                    -n internal \
+                    -l app=trivy-report-exporter \
+                    --ignore-not-found
+
+                  echo "Exporting vulnerability reports..."
                   kubectl get vulnerabilityreports -A -o json \
                     > /reports/reports.json
-                  sleep 30000
               volumeMounts:
                 - name: reports
                   mountPath: /reports
