@@ -8,11 +8,10 @@ data:
     <!doctype html>
     <html lang="en" class="dark">
     <head>
-        <meta charset="UTF-8" />
+        <meta charset="UTF-8"/>
         <title>Security Reports</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
         
-        <!-- Tailwind CDN -->
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
@@ -36,31 +35,24 @@ data:
     <body class="bg-zinc-950 text-zinc-100 min-h-screen">
 
     <!-- LOADER -->
-    <div id="loader"
-         class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950 transition-opacity duration-500">
+    <div id="loader" class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950">
         <div class="text-center">
-            <div class="mx-auto h-14 w-14 rounded-full border-4 border-zinc-700 border-t-red-500 animate-spinSlow"></div>
-            <p id="loaderText"
-               class="mt-6 text-sm text-zinc-400 animate-pulseSlow">
+            <div class="h-14 w-14 mx-auto rounded-full border-4 border-zinc-700 border-t-red-500 animate-spinSlow"></div>
+            <p id="loaderText" class="mt-6 text-sm text-zinc-400 animate-pulseSlow">
                 Loading security report…
             </p>
-            <p class="mt-2 text-xs text-zinc-600 mono">reports.json</p>
         </div>
     </div>
 
-    <!-- APP -->
-    <div class="max-w-7xl mx-auto px-6 py-10">
+    <div class="max-w-7xl mx-auto px-6 py-8">
         
-        <header class="flex items-end justify-between gap-4">
+        <!-- HEADER -->
+        <header class="flex justify-between items-end gap-4">
             <div>
                 <h1 class="text-3xl font-semibold">Security Reports</h1>
-                <p id="subtitle" class="mt-1 text-sm text-zinc-400">—</p>
+                <p id="subtitle" class="text-sm text-zinc-400 mt-1">—</p>
             </div>
             <div class="flex gap-2">
-                <button onclick="location.reload()"
-                        class="rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm hover:bg-zinc-800">
-                    Refresh
-                </button>
                 <a href="./reports.json" target="_blank"
                    class="rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm hover:bg-zinc-800">
                     View JSON
@@ -68,130 +60,165 @@ data:
             </div>
         </header>
         
-        <!-- SUMMARY -->
-        <section class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
-            <div class="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
-                <div class="text-xs text-zinc-400">CRITICAL</div>
-                <div id="crit" class="text-2xl font-semibold">0</div>
-            </div>
-            <div class="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
-                <div class="text-xs text-zinc-400">HIGH</div>
-                <div id="high" class="text-2xl font-semibold">0</div>
-            </div>
-            <div class="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
-                <div class="text-xs text-zinc-400">MEDIUM</div>
-                <div id="medium" class="text-2xl font-semibold">0</div>
-            </div>
-            <div class="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
-                <div class="text-xs text-zinc-400">LOW</div>
-                <div id="low" class="text-2xl font-semibold">0</div>
-            </div>
-            <div class="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
-                <div class="text-xs text-zinc-400">UNKNOWN</div>
-                <div id="unknown" class="text-2xl font-semibold">0</div>
-            </div>
-            <div class="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
-                <div class="text-xs text-zinc-400">TOTAL</div>
-                <div id="total" class="text-2xl font-semibold">0</div>
-            </div>
+        <!-- FILTERS -->
+        <section class="mt-6 flex flex-wrap gap-3 items-center">
+            <input id="search"
+                   placeholder="Search CVE / package / image…"
+                   class="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm w-72"/>
+            
+            <select id="severityFilter"
+                    class="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm">
+                <option value="">All severities</option>
+                <option>CRITICAL</option>
+                <option>HIGH</option>
+                <option>MEDIUM</option>
+                <option>LOW</option>
+                <option>UNKNOWN</option>
+            </select>
         </section>
         
+        <!-- NAMESPACE TABS -->
+        <div id="tabs" class="mt-6 flex gap-2 flex-wrap"></div>
+        
         <!-- TABLE -->
-        <section class="mt-10">
-            <h2 class="text-lg font-semibold mb-3">Vulnerabilities</h2>
-            
-            <div class="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/40">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full text-sm">
-                        <thead class="bg-zinc-950/50 text-xs uppercase text-zinc-400">
-                        <tr>
-                            <th class="px-4 py-3 text-left">Severity</th>
-                            <th class="px-4 py-3 text-left">CVE</th>
-                            <th class="px-4 py-3 text-left">Package</th>
-                            <th class="px-4 py-3 text-left">Installed</th>
-                            <th class="px-4 py-3 text-left">Fixed</th>
-                            <th class="px-4 py-3 text-left">Image</th>
-                        </tr>
-                        </thead>
-                        <tbody id="tbody" class="divide-y divide-zinc-800"></tbody>
-                    </table>
-                </div>
+        <div class="mt-4 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/40">
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead class="bg-zinc-950/50 text-xs uppercase text-zinc-400">
+                    <tr>
+                        <th class="px-4 py-3 cursor-pointer" onclick="sortBy('severity')">Severity</th>
+                        <th class="px-4 py-3 cursor-pointer" onclick="sortBy('cve')">CVE</th>
+                        <th class="px-4 py-3 cursor-pointer" onclick="sortBy('pkg')">Package</th>
+                        <th class="px-4 py-3 cursor-pointer" onclick="sortBy('installed')">Installed</th>
+                        <th class="px-4 py-3 cursor-pointer" onclick="sortBy('fixed')">Fixed</th>
+                        <th class="px-4 py-3 cursor-pointer" onclick="sortBy('image')">Image</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody" class="divide-y divide-zinc-800"></tbody>
+                </table>
             </div>
-        </section>
+        </div>
 
     </div>
 
     <script>
         const loader = document.getElementById('loader');
         const loaderText = document.getElementById('loaderText');
+        const tbody = document.getElementById('tbody');
+        const tabs = document.getElementById('tabs');
+        
+        let all = [];
+        let currentNS = '';
+        let sortKey = '';
+        let sortDir = 1;
         
         function hideLoader() {
             loader.classList.add('opacity-0');
-            setTimeout(() => loader.remove(), 500);
+            setTimeout(() => loader.remove(), 400);
         }
         
         function badge(sev) {
             const c = {
-                CRITICAL: 'border-red-900 bg-red-950 text-red-300',
-                HIGH: 'border-orange-900 bg-orange-950 text-orange-300',
-                MEDIUM: 'border-amber-900 bg-amber-950 text-amber-300',
-                LOW: 'border-lime-900 bg-lime-950 text-lime-300',
-                UNKNOWN: 'border-sky-900 bg-sky-950 text-sky-300'
+                CRITICAL: 'bg-red-950 text-red-300 border-red-900',
+                HIGH: 'bg-orange-950 text-orange-300 border-orange-900',
+                MEDIUM: 'bg-amber-950 text-amber-300 border-amber-900',
+                LOW: 'bg-lime-950 text-lime-300 border-lime-900',
+                UNKNOWN: 'bg-sky-950 text-sky-300 border-sky-900'
             };
             return `<span class="rounded-full border px-2 py-0.5 text-xs ${c[sev] || c.UNKNOWN}">${sev}</span>`;
         }
         
-        async function load() {
-            try {
-                loaderText.textContent = 'Fetching reports.json…';
-                const res = await fetch('./reports.json', { cache: 'no-store' });
-                if (!res.ok) throw new Error('Failed to load reports.json');
-                
-                loaderText.textContent = 'Parsing report…';
-                const json = await res.json();
-                
-                loaderText.textContent = 'Rendering UI…';
-                
-                let counts = { CRITICAL:0, HIGH:0, MEDIUM:0, LOW:0, UNKNOWN:0 };
-                let rows = [];
-                
-                for (const item of json.items || []) {
-                    const image = `${item.report?.artifact?.repository}:${item.report?.artifact?.tag}`;
-                    for (const v of item.report?.vulnerabilities || []) {
-                        const sev = (v.severity || 'UNKNOWN').toUpperCase();
-                        counts[sev] = (counts[sev] || 0) + 1;
-                        
-                        rows.push(`
-                <tr class="hover:bg-zinc-950/40">
-                  <td class="px-4 py-3">${badge(sev)}</td>
-                  <td class="px-4 py-3 mono">${v.vulnerabilityID || '—'}</td>
-                  <td class="px-4 py-3">${v.resource || '—'}</td>
-                  <td class="px-4 py-3 mono">${v.installedVersion || '—'}</td>
-                  <td class="px-4 py-3 mono">${v.fixedVersion || '—'}</td>
-                  <td class="px-4 py-3 text-xs text-zinc-400">${image}</td>
-                </tr>
-              `);
-                    }
-                }
-                
-                document.getElementById('crit').textContent = counts.CRITICAL;
-                document.getElementById('high').textContent = counts.HIGH;
-                document.getElementById('medium').textContent = counts.MEDIUM;
-                document.getElementById('low').textContent = counts.LOW;
-                document.getElementById('unknown').textContent = counts.UNKNOWN;
-                document.getElementById('total').textContent =
-                    Object.values(counts).reduce((a,b)=>a+b,0);
-                
-                document.getElementById('tbody').innerHTML = rows.join('');
-                document.getElementById('subtitle').textContent =
-                    `Loaded ${rows.length} vulnerabilities`;
-                
-                hideLoader();
-            } catch (e) {
-                loaderText.textContent = 'Failed to load report';
-                console.error(e);
+        function sortBy(k) {
+            sortDir = sortKey === k ? -sortDir : 1;
+            sortKey = k;
+            render();
+        }
+        
+        function render() {
+            tbody.innerHTML = '';
+            
+            const q = document.getElementById('search').value.toLowerCase();
+            const sev = document.getElementById('severityFilter').value;
+            
+            let rows = all.filter(v =>
+                v.ns === currentNS &&
+                (!sev || v.severity === sev) &&
+                (!q || v.search.includes(q))
+            );
+            
+            if (sortKey) {
+                rows.sort((a,b) =>
+                    (a[sortKey] > b[sortKey] ? 1 : -1) * sortDir
+                );
+            }
+            
+            for (const v of rows) {
+                tbody.innerHTML += `
+            <tr class="hover:bg-zinc-950/40">
+              <td class="px-4 py-3">${badge(v.severity)}</td>
+              <td class="px-4 py-3 mono">${v.cve}</td>
+              <td class="px-4 py-3">${v.pkg}</td>
+              <td class="px-4 py-3 mono">${v.installed}</td>
+              <td class="px-4 py-3 mono">${v.fixed}</td>
+              <td class="px-4 py-3 text-xs text-zinc-400">${v.image}</td>
+            </tr>`;
             }
         }
+        
+        async function load() {
+            loaderText.textContent = 'Fetching reports.json…';
+            const res = await fetch('./reports.json', { cache: 'no-store' });
+            const json = await res.json();
+            
+            const nsSet = new Set();
+            
+            for (const item of json.items || []) {
+                const ns = item.metadata?.namespace || 'default';
+                const image = `${item.report?.artifact?.repository}:${item.report?.artifact?.tag}`;
+                
+                nsSet.add(ns);
+                
+                for (const v of item.report?.vulnerabilities || []) {
+                    const sev = (v.severity || 'UNKNOWN').toUpperCase();
+                    all.push({
+                        ns,
+                        severity: sev,
+                        cve: v.vulnerabilityID || '—',
+                        pkg: v.resource || '—',
+                        installed: v.installedVersion || '—',
+                        fixed: v.fixedVersion || '—',
+                        image,
+                        search: `${v.vulnerabilityID} ${v.resource} ${image}`.toLowerCase()
+                    });
+                }
+            }
+            
+            [...nsSet].sort().forEach((ns,i) => {
+                const b = document.createElement('button');
+                b.textContent = ns;
+                b.className = 'px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900 text-sm hover:bg-zinc-800';
+                b.onclick = () => {
+                    currentNS = ns;
+                    [...tabs.children].forEach(x=>x.classList.remove('bg-zinc-800'));
+                    b.classList.add('bg-zinc-800');
+                    render();
+                };
+                if (i === 0) {
+                    currentNS = ns;
+                    b.classList.add('bg-zinc-800');
+                }
+                tabs.appendChild(b);
+            });
+            
+            document.getElementById('subtitle').textContent =
+                `Namespaces: ${nsSet.size} • Vulnerabilities: ${all.length}`;
+            
+            hideLoader();
+            render();
+        }
+        
+        document.getElementById('search').oninput = render;
+        document.getElementById('severityFilter').onchange = render;
         
         load();
     </script>
