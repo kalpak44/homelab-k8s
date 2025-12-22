@@ -35,17 +35,12 @@ spec:
                   mountPath: /work
 
             - name: trivy-converter
-              image: aquasec/trivy:0.50.1
+              image: sandbox:latest
               command:
                 - /bin/sh
                 - -c
                 - |
-                  set -e
-                  trivy convert \
-                    --format template \
-                    --template "@/contrib/html.tpl" \
-                    /work/reports.json \
-                    > /reports/index.html
+                  sleep 99999
               volumeMounts:
                 - name: work
                   mountPath: /work
